@@ -1,4 +1,23 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
+//import '@fortawesome/fontawesome-free/css/all.css'
+//import '@fortawesome/fontawesome-free/js/all.js'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import store from './store'
+library.add(fas, fab, far)
 
-createApp(App).mount('#app')
+
+createApp(App).use(store)
+.component('fa', FontAwesomeIcon)
+.mount('#app')
+.use(VueAxios, axios)
+
+
