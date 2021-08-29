@@ -1,15 +1,30 @@
 <template>
   <div id="header">
     <div class="account">
-      hiltonpopo
-      <fa class="plus" :icon="['fas', 'plus']" />
-      <fa class="bars" :icon="['fas', 'bars']" />
+      <div class="name">
+        <p>{{$store.state.intro.username}}
+          <i>9+</i>
+        </p>
+      </div>
+      <div class="symbols">
+        <fa class="plus" :icon="['fas', 'plus']" />
+        <fa class="bars" :icon="['fas', 'bars']" />
+      </div>
     </div>
   </div>
   <div id="user">
     <div class="user container-fluid row m-0">
-      <div class="item-info col-3" v-for="(num, index) in itemInfo" :key="index">{{num}}</div>
-      <div class="item-name col-3" v-for="(item, index) in itemName" :key="index">{{item}}</div>
+      <div class="avatar col-3">
+        <img :src="$store.state.intro.avatar" alt="avatar">
+      </div>
+      <div class="item col-9">
+        <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
+          {{item.value}} <br>
+          {{item.title}}
+        </div>
+        <!-- <div class="item-name col-3" v-for="(item, index) in itemName" :key="index">{{item}}</div> -->
+      </div>
+
       
       <!-- <div class="col-3">
         <p>avatar</p>
@@ -23,61 +38,133 @@
       <div class="col-3">fo</div> -->
     </div>
     <div class="personal-info container-fluid row">
-      Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quas voluptatum
-      distinctio totam alias explicabo cupiditate necessitatibus maxime eveniet
-      nemo? Harum ea excepturi quis dolores, placeat eaque delectus beatae
-      tempore sit non quo quas, reiciendis optio incidunt ipsam voluptate, quae
-      cum!
+      {{$store.state.intro.name}}
+      <br>
+      {{$store.state.intro.biography}}
     </div>
     <div class="edit-personal">編輯個人檔案</div>
+    <album></album>
     
   </div>
 </template>
 
 <script>
+import album from './album.vue'
 export default {
   name: "userProfile",
+  components: {
+    album,
+  },
   props: {},
   data() {
     return {
-      itemName:[null, '貼文', '粉絲', '追蹤中'],
-      itemInfo:[null, '200', '300', '400'],
+      itemInfo:[
+        {
+          title:'貼文',
+          value:''
+        },
+        {
+          title:'粉絲',
+          value:'',
+        },
+        {
+          title:'追蹤中',
+          value:''
+        }
+      ],
+
+
     }
-  }
-};
+  },
+  methods:{
+
+  },
+  mounted() {
+    this.$store.dispatch('basicInfos', this.itemInfo);
+      // axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',
+      // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      // .then(response => {
+      //   console.log(response.data)
+      //   let posts = response.data.business_discovery.media_count;
+      //   let followers = response.data.business_discovery.followers_count;
+      //   let follows = response.data.business_discovery.follows_count;
+        
+      //   this.$store.state.rowData = response.data.business_discovery.media.data
+      //   this.$store.state.intro.username = response.data.business_discovery.username;
+      //   this.$store.state.intro.avatar = response.data.business_discovery.profile_picture_url;
+      //   this.$store.state.intro.name = response.data.business_discovery.name;
+      //   this.$store.state.intro.biography = response.data.business_discovery.biography;
+
+      //   this.itemInfo[0].value = posts;
+      //   this.itemInfo[1].value = followers;
+      //   this.itemInfo[2].value = follows;
+      //   this.$store.commit('photoInfos')
+      // })
+      // .catch(error => {
+      //   console.log(error)
+      // });
+  },
+
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-ul {
-  list-style-type: none;
-  float: left;
+#header {
+  padding: 15px 24px;
 }
 
-li {
+.account {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.name p i {
   display: inline-block;
+  width: 20px;
+  text-align: center;
+  font-size: 12px;
+  color:white;
+  background-color: red;
+  border-radius: 40%;
+}
+
+.account > .symbols > :first-child {
+  margin-right: 15px;
 }
 
 
-.personal-info {
-  margin: 0;
-  padding-right: 25px;
-  padding-left: 25px;
+
+.avatar {
+  display: flex;
+  justify-content: center;
 }
 
-.col-3 {
-  padding-left: 0;
-  align-self: center;
+.avatar > img{
+  width: 80px;
+  border-radius: 50%;
+}
+
+.item {
+  display: flex;
   text-align: center;
 }
 
-.item-name {
-  line-height: 0.7;
-  padding-bottom: 50px;
+
+.item > .item-info {
+  display: inline-flex;
+  flex:0 0 33%;
+  justify-content: center;
+  align-self: center;
+  line-height: 1.1;
+  font-size: 15px;
 }
 
-.item-info {
-  font-size: 18px;
+.personal-info {
+  margin: 0;
+  padding-top: 10px;
 }
 
 .edit-personal {

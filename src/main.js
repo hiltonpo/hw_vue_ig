@@ -1,7 +1,5 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 //import '@fortawesome/fontawesome-free/css/all.css'
@@ -18,6 +16,6 @@ library.add(fas, fab, far)
 createApp(App).use(store)
 .component('fa', FontAwesomeIcon)
 .mount('#app')
-.use(VueAxios, axios)
+
 
 

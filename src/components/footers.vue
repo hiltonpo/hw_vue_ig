@@ -1,6 +1,10 @@
 <template>
   <div class="footers">
-    footer
+    <div><fa  :icon="['fas', 'house-user']" /></div>
+    <div><fa  :icon="['fas', 'search']" /></div>
+    <div><fa  :icon="['fas', 'plus-square']" /></div>
+    <div><fa  :icon="['fas', 'shopping-bag']" /></div>
+    <div><fa  :icon="['fas', 'user-circle']" /></div>
   </div>
 
 </template>
@@ -16,16 +20,22 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.col-4 {
-  border: 1px solid #ccc;
-}
+
 .footers {
+  display: flex;
   position: fixed;
   bottom: 0;
   width: 100%;
   height: 40px;
   background-color: #000;
   color: #ccc;
-
 }
+
+div {
+  flex:1 ;
+  align-items: center;
+  text-align: center;
+  font-size: 18px;
+}
+
 </style>
