@@ -17,14 +17,18 @@
         <img :src="item" alt="tagPhotos" data-bs-toggle="modal" data-bs-target="#photoModal">
     </div>
   </div>
+  <!-- <timeLine v-if="$store.state.showModal"></timeLine> -->
   
 
 </template>
 
 <script>
-
+// import timeLine from './timeLine.vue'
 export default {
   name: 'album',
+  // components:{
+  //   timeLine
+  // },
   props: {
 
   },
@@ -48,6 +52,7 @@ export default {
     photoLine(currentItem, index) {
       if (this.toggle == 1 ){
         this.$store.commit('createModal', {currentItem, index});
+        this.$store.dispatch('readComment')
       } else {
         this.$store.commit('createTagModal', {currentItem, index});
       }
@@ -58,9 +63,12 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.scroll);
+    // this.$store.dispatch('readComment')
+
   },
   mounted() {
     this.$store.dispatch('tagInfos')
+    // this.$store.dispatch('readComment')
     // axios.post('http://localhost:8080/demo_hw/vue_ig/API/mentions.php',
     // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
     // .then(response => {

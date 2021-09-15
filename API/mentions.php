@@ -2,7 +2,7 @@
 	include 'defines.php';
     // https://graph.facebook.com/v11.0/17841400203867081/tags?fields=id,caption,username,like_count&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
 	// get instagram user metadata endpoint
-	$endpointFormat = ENDPOINT_BASE . '{ig-user-id}?fields=id,caption,username,like_count&access_token={access-token}';
+	$endpointFormat = ENDPOINT_BASE . '{ig-user-id}/tags?fields=id,caption,username,like_count&access_token={access-token}';
 	$endpoint = ENDPOINT_BASE . $instagramAccountId;
 
 	// endpoint params

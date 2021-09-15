@@ -44,16 +44,19 @@
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
+    <timeLine v-if="$store.state.showModal"></timeLine>
     
   </div>
 </template>
 
 <script>
 import album from './album.vue'
+import timeLine from './timeLine.vue'
 export default {
   name: "userProfile",
   components: {
     album,
+    timeLine,
   },
   props: {},
   data() {
