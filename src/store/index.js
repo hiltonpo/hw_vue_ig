@@ -79,27 +79,54 @@ export default createStore({
       state.eventData = Object.assign([], state.eventInfo);
       console.log(state.eventData);
     },
-
+    
+    // read comments in post (front-end)
     getComments(state, comments) {
-      state.comments[state.eventID] = Object.assign([], comments);
-      // var index = comments.length
-      // state.reply = Object.assign([], comments.replies[index].text);
+      // order by time in comments
+      const orderByTime_comments = comments.sort((a, b) => {
+        return a.timestamp > b.timestamp ? 1 : -1;
+      })
+      // put ordered comments in post
+      state.comments[state.eventID] = Object.assign([], orderByTime_comments);
       console.log(state.comments);
       console.log(state.eventID);
-      // console.log(state.reply)
-      // console.log(index)
+
+    },
+
+    // show the create comments immediately in post
+    putComments(state, id) {
+      if (state.comments[state.eventID].length == 0) {
+        var newOrder = 0; 
+        state.comments[state.eventID][newOrder] = {
+          "id": id.id,
+          "username":"hiltonpopo", 
+          "text":state.commentInfo, 
+          "like_count": 0,
+        };
+      }
+      else {
+        var plusOrder = state.comments[state.eventID].length;  
+        state.comments[state.eventID][plusOrder] = {
+          "id": id.id,
+          "username":"hiltonpopo", 
+          "text":state.commentInfo, 
+          "like_count": 0,
+        };
+      }
+      console.log(state.comments)
+    },
+
+    // remove the create comments immediately in post
+    removeComments(state) {
+      state.comments[state.eventID].splice(state.activeComment, 1);
     },
 
     //use in Vuex strict mode
-
     createComment(state, newComment) {
       state.commentInfo = newComment;
     },
 
     editMode(state, index) {
-      // console.log($event.currentTarget)
-      // state.isEdit = !state.isEdit;
-      // state.activeComment = true;
       state.activeComment = index;
       console.log(state.activeComment)
 
@@ -122,11 +149,12 @@ export default createStore({
     },
 
     closeEditMode(state) {
-      state.activeComment = [];
+      state.activeComment = null;
     }
 
   },
   actions: {
+    // basic information including username, follower, posts... (back-end)
     basicInfos({commit, state}, itemInfo) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -152,6 +180,7 @@ export default createStore({
       });
     },
 
+    //tag photo information (back-end)
     tagInfos({commit, state}) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/mentions.php',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -165,8 +194,8 @@ export default createStore({
       });
 
     },
-    // readUI for comments
-    readComment({commit,state}) {
+    // readUI for comments (back-end)
+    readComment({commit, state}) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/comment.php',
       {mediaID: state.eventInfo.postID}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -180,29 +209,32 @@ export default createStore({
 
     },
 
-    //createUI for comments
-    postComment({commit,state}) {
+    //createUI for comments (back-end)
+    postComment({commit, state}) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/createcomment.php',
       {mediaID: state.eventData.postID,
       message:state.commentInfo}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        this.dispatch('readComment')
+        commit('putComments', response.data)
+        // dispatch('readComment')
         console.log(response.data);
         commit('closeTextarea')
+        
       })
       .catch(error => {
         console.log(error);
       });
     },
     
-    //deleteUI for comments
-    deleteComment({commit}, commentID) {
+    //deleteUI for comments (back-end)
+    deleteComment({commit}, comment) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/deletecomment.php',
-      {commentID: commentID}, 
+      {commentID: comment.id}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        this.dispatch('readComment')
+        // this.dispatch('readComment')
+        commit('removeComments')
         commit('closeEditMode')
         console.log(response.data);
       })

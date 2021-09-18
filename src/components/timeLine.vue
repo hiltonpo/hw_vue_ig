@@ -53,7 +53,7 @@
                 </div>
               </div>
               <div class="editButtons" v-if="$store.state.activeComment == index && !$store.state.isTextarea">
-                <button class="delete" @click="deleteComment(comment)">delete</button>
+                <button class="delete" @click.stop="deleteComment(comment)">delete</button>
                 <button class="cancel" @click.stop="cancel">cancel</button>
               </div>
 
@@ -121,7 +121,7 @@ export default {
     },
 
     deleteComment(comment) {
-      this.$store.dispatch('deleteComment', comment.id)
+      this.$store.dispatch('deleteComment', comment)
       console.log(comment.id)
     },
 
@@ -140,7 +140,7 @@ export default {
     },
 
     postComment() {
-      this.$store.dispatch('postComment')      
+      this.$store.dispatch('postComment')     
     }
 
 
@@ -149,8 +149,10 @@ export default {
   created() {
     this.$store.commit('cancel')
 
+
   },
   mounted() {
+    
 
   },
 

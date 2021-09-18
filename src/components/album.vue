@@ -1,9 +1,9 @@
 <template>
   <div class="switch-row row"  ref="switch" :class="{fixed: active}">
-    <div class="posts col-6" @click="changeModel(1)">
+    <div class="posts col-6" @click="switchModel(1)">
       <fa class="posts" :icon="['fas', 'th']" />
     </div>
-    <div class="tag col-6" @click="changeModel(2)">
+    <div class="tag col-6" @click="switchModel(2)">
       <fa class="tag" :icon="['fas', 'user-tag']" />
     </div>
   </div>
@@ -45,7 +45,7 @@ export default {
       this.active = window.scrollY >= yposistion ? true : false;
     },
 
-    changeModel(toggle) {
+    switchModel(toggle) {
       this.toggle = toggle;
     },
 
@@ -56,18 +56,18 @@ export default {
       } else {
         this.$store.commit('createTagModal', {currentItem, index});
       }
-      
-      
     }
 
   },
   created() {
     window.addEventListener("scroll", this.scroll);
+
     // this.$store.dispatch('readComment')
 
   },
   mounted() {
     this.$store.dispatch('tagInfos')
+
     // this.$store.dispatch('readComment')
     // axios.post('http://localhost:8080/demo_hw/vue_ig/API/mentions.php',
     // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})

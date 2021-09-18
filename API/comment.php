@@ -2,14 +2,14 @@
 	include 'defines.php';
 	$data = json_decode(file_get_contents("php://input"), true);
    
-	// https://graph.facebook.com/v11.0/{ig-media-id}/comments?fields=like_count,replies,username,text&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
+	// https://graph.facebook.com/v11.0/{ig-media-id}/comments?fields=like_count,replies,username,text,timestamp&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
 	// commentsEndpoint formats
-	$commentsEndpointFormat = ENDPOINT_BASE . '{ig-media-id}/comments?fields=id,username,text,like_count,replies';
+	$commentsEndpointFormat = ENDPOINT_BASE . '{ig-media-id}/comments?fields=id,username,text,like_count,replies,timestamp';
 	$commentsEndpoint = ENDPOINT_BASE . $data['mediaID'] ;
 
 	// endpoint params
 	$igParams = array(
-		'fields' => 'id,username,text,like_count,replies',
+		'fields' => 'id,username,text,like_count,replies,timestamp',
 		'access_token' => $accessToken
 	);
 
