@@ -1,35 +1,22 @@
 <?php
 	include 'defines.php';
-	include 'HTTPStatusCode.php';
-	$data = json_decode(file_get_contents("php://input"), true);
-
-	// validation
-    // comment cannot be blank
-    if (empty($data['message'])) {
-		new HttpStatusCode(400, 'comment cannot be blank.');}
    
-	// https://graph.facebook.com/v11.0/{ig-media-id}/comments?message={message}&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
-	// postCommentEndpoint formats
-	$postCommentEndpointFormat = ENDPOINT_BASE . '{ig-media-id}/comments?message={message}';
-	$postCommentEndpoint = ENDPOINT_BASE . $data['mediaID'] ;
-
+	// https://graph.facebook.com/v11.0/{ig-user-id}/stories?access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
+	// commentsEndpoint formats
+	$storiesEndpointFormat = ENDPOINT_BASE . '{ig-user-id}/stories?';
+	$storiesEndpoint = ENDPOINT_BASE . $instagramAccountId ;
 
 	// endpoint params
 	$igParams = array(
-		'message' => $data['message'],
-		'access_token' => $accessToken
+		'access_token' => $accessToken,
 	);
 
-
 	// add params to endpoint
-	$postCommentEndpoint .= '/comments?' . http_build_query( $igParams );
+	$storiesEndpoint .= '/stories?' . http_build_query( $igParams );
 
 	// setup curl
 	$ch = curl_init();
-	curl_setopt( $ch, CURLOPT_URL, $postCommentEndpoint );
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $igParams ) );
-	curl_setopt( $ch, CURLOPT_POST, 1 );
-
+	curl_setopt( $ch, CURLOPT_URL, $storiesEndpoint );
 	curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, false );
 	curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );

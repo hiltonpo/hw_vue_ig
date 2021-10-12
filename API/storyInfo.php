@@ -1,35 +1,24 @@
 <?php
 	include 'defines.php';
-	include 'HTTPStatusCode.php';
 	$data = json_decode(file_get_contents("php://input"), true);
-
-	// validation
-    // comment cannot be blank
-    if (empty($data['message'])) {
-		new HttpStatusCode(400, 'comment cannot be blank.');}
    
-	// https://graph.facebook.com/v11.0/{ig-media-id}/comments?message={message}&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
-	// postCommentEndpoint formats
-	$postCommentEndpointFormat = ENDPOINT_BASE . '{ig-media-id}/comments?message={message}';
-	$postCommentEndpoint = ENDPOINT_BASE . $data['mediaID'] ;
-
+	// https://graph.facebook.com/v11.0/{media-id}?fields=caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username&access_token=EAAEpATmnLkkBABlaZBIiILT4fAeU7FoiGMe7efKW28iadgbGRszWex5prGP3AiiiyljP0HeCxSHuTHQATBe8850serGJQGg6wF8QHd1yhZBhm9x4mlqCWx1U4JdhF0laJcuVJxZBr0F2KOwFrENvcihGWmZBmqcBfzjy95SMtQZDZD
+	// storiesInfoEndpoint formats
+	$storiesInfoEndpointFormat = ENDPOINT_BASE . '{media-id}?fields=caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username';
+	$storiesInfoEndpoint = ENDPOINT_BASE . $data['id'];
 
 	// endpoint params
 	$igParams = array(
-		'message' => $data['message'],
-		'access_token' => $accessToken
+		'fields' => 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username',
+		'access_token' => $accessToken,
 	);
 
-
 	// add params to endpoint
-	$postCommentEndpoint .= '/comments?' . http_build_query( $igParams );
+	$storiesInfoEndpoint .= '?' . http_build_query( $igParams );
 
 	// setup curl
 	$ch = curl_init();
-	curl_setopt( $ch, CURLOPT_URL, $postCommentEndpoint );
-	curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $igParams ) );
-	curl_setopt( $ch, CURLOPT_POST, 1 );
-
+	curl_setopt( $ch, CURLOPT_URL, $storiesInfoEndpoint );
 	curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, false );
 	curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, false );
 	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
@@ -38,6 +27,8 @@
 	$response = curl_exec( $ch );
 	curl_close( $ch );
     echo $response;
+
+	
 
 
 // 	include 'defines.php';

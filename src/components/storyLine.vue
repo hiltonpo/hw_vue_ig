@@ -1,6 +1,6 @@
 <template>
 
-<div class="modal fade" id="photoModal"  role="dialog"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal fade" id="storyModal"  role="dialog"  data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog  modal-fullscreen-sm-down" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -9,17 +9,23 @@
             <img :src="$store.state.intro.avatar" alt="photo">
           </div>
           <div class="user-account">
-            hiltonpopo
+            <div>限時動態</div>
+            <div class="duringTime">{{$store.state.duringTime}}</div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
       </div>
       <div class="modal-body">
         <div class="container-fluid">
-          <div class="photoLeft">
-            <img :src="$store.state.eventData.photo" alt="photo">  
+
+          <div class="stories" v-for="(story, index) in $store.state.stories" :key="index">
+            
+            <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="$store.state.step===index" @click.capture="changeStory()">
+            <video controls :poster="story.thumbnail_url" v-else  v-show="$store.state.step===index" @click.capture="changeStory()">
+              <source :src="story.media_url"> 
+            </video>
           </div>
-          <div class="symbol">
+          <!-- <div class="symbol">
             <fa class="heart" :icon="['far', 'heart']" />
             <fa class="comment" :icon="['far', 'comment']" @click="showTextarea" />
           </div>
@@ -29,8 +35,8 @@
           <div class="caption">
             {{$store.state.eventData.caption}}
           </div>
-          <hr>
-          <div class="comments">
+          <hr> -->
+          <!-- <div class="comments">
             <div class="originComments edit clearfix"  v-for="(comment, index) in $store.state.comments[$store.state.eventID]" :key="index"
             @click.prevent="edit(index)">
               
@@ -63,15 +69,12 @@
           </div>
 
           <div id="text-panel" :class="newClass"  v-if="$store.state.isTextarea">
-            <div class="error-msg" :class="[$store.state.errorMessage ? 'open' : '']">
-              <div class="alert alert-danger">{{$store.state.errorMessage}}</div>
-            </div>
             <textarea name="description" id="description"  placeholder="請輸入文字..."  v-model="newComment"></textarea>
             <div class="buttons">
               <button class="create" @click="postComment">comment</button>
               <button class="cancel" @click="close">cancel</button>
             </div>
-          </div>
+          </div> -->
 
 
 
@@ -87,77 +90,138 @@
 </template>
 
 <script>
-
 export default {
-  name: 'timeLine',
+  name: 'storyLine',
   props: {
     
   },
   data() {
     return{
-      newClass:'new',
-
+      
     }
   },
 
   computed: {
+    // aaa() {
+    //   let bbb = JSON.parse(JSON.stringify(this.$store.state.stories))
+    //   console.log(bbb[0][0])
+    //   return bbb
+    // }
 
-    newComment:{
-      get() {
-        return this.$store.state.commentInfo;
-      },
+    
 
-      set(value) {
-        this.$store.commit('createComment', value);
-      },
-    }
+  
+
+
+    // calTime:{
+    //   get() {
+    //     var postTime = {
+    //       hr: new Date(this.$store.state.stories[this.step].timestamp).getHours(),
+    //       min: new Date(this.$store.state.stories[this.step].timestamp).getMinutes(),
+    //       sec: new Date(this.$store.state.stories[this.step].timestamp).getSeconds(),
+    //     }
+
+    //     if (this.nowTime[0]>postTime[0]) {
+    //       this.duringTime = this.nowTime[0] - postTime[0] + '小時';
+
+    //     } else if (this.nowTime[0]==postTime[0] && this.nowTime[1]>postTime[1]) {
+    //       this.duringTime = this.nowTime[1] - postTime[1] + '分';
+
+    //     } else if (this.nowTime[0]==postTime[0] && this.nowTime[1]==postTime[1]) {
+    //       this.duringTime = this.nowTime[2] - postTime[2] + '秒';
+    //     } else {
+    //       this.duringTime = this.nowTime[0] - postTime[0] + 24 + '小時';
+    //     };
+
+    //     return this.postTime
+
+    //   },
+
+    //   set(value) {
+    //     this.duringTime = value
+
+    //   }
+    // }
+
+
+    // newComment:{
+    //   get() {
+    //     return this.$store.state.commentInfo;
+    //   },
+
+    //   set(value) {
+    //     this.$store.commit('createComment', value);
+    //   },
+    // }
 
   },
 
 
   methods: {
 
-    //delete & cancel
+    // calTime() {
+    //   this.$store.commit('calStoryTime')
+    // },
 
-    edit(index) {
-      this.$store.commit('editMode', index)
-    },
 
-    deleteComment(comment) {
-      this.$store.dispatch('deleteComment', comment)
-      console.log(comment.id)
-    },
 
-    cancel() {
-      this.$store.commit('cancel')
-    },
+    // calTime() {
+    //   var postTime = {
+    //       hr: new Date(this.$store.state.stories[this.step].timestamp).getHours(),
+    //       min: new Date(this.$store.state.stories[this.step].timestamp).getMinutes(),
+    //       sec: new Date(this.$store.state.stories[this.step].timestamp).getSeconds(),
+    //     }
 
-    //comment & cancel
+    //     if (this.nowTime[0]>postTime[0]) {
+    //       this.duringTime = this.nowTime[0] - postTime[0] + '小時';
 
-    showTextarea() {
-      this.$store.commit('openTextarea')
+    //     } else if (this.nowTime[0]==postTime[0] && this.nowTime[1]>postTime[1]) {
+    //       this.duringTime = this.nowTime[1] - postTime[1] + '分';
+
+    //     } else if (this.nowTime[0]==postTime[0] && this.nowTime[1]==postTime[1]) {
+    //       this.duringTime = this.nowTime[2] - postTime[2] + '秒';
+    //     } else {
+    //       this.duringTime = this.nowTime[0] - postTime[0] + 24 + '小時';
+    //     };
+    // },
+
+    changeStory() {
+      if (this.$store.state.step < (this.$store.state.storyIDs.length-1) ) {
+        this.$store.state.step++
+      }
+
+      this.$store.commit('calStoryTime', this.$store.state.step)
+
+      console.log(this.$store.state.step)
     },
 
     close() {
-      this.$store.commit('closeTextarea')
-    },
+      setTimeout(() => {
+        this.$store.state.step = 0
+        this.$store.commit('calStoryTime', this.$store.state.step)
+      }, 1000)
+      
 
-    postComment() {
-      this.$store.dispatch('postComment')     
     }
+
 
 
 
   },
   created() {
-    this.$store.commit('cancel')
-
-
+    this.$store.dispatch('stories');
+    // this.calTime()
+    this.close()
+    
   },
   mounted() {
+
+    
+    
     
 
   },
+  
 
       
 }
@@ -165,7 +229,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#photoModal {
+#storyModal {
   position: fixed;
 }
 
@@ -176,39 +240,43 @@ export default {
 .littleInfo .user-pic > img {
   width: 40px;
   border-radius: 50%;
-}
+} 
 
 .user-account {
   display: flex;
   align-items: center;
   padding-left: 10px;
+}
 
+.user-account .duringTime {
+  padding-left: 16px;
+  color:rgb(160, 153, 153)
 }
 
 .modal-body {
   display: flex;
 }
 
-.photoLeft {
+.stories {
   padding-bottom: 8px;
 }
 
-.symbol .heart {
+/* .symbol .heart {
   margin-right: 8px;
 }
 
 .like {
   padding-bottom: 10px;
   font-weight: bold;
-}
+} */
 
-.photoLeft > img {
+.stories > img, video{
   width: 100%;
   height: 100%;
   object-fit:cover;
 }
 
-.caption {
+/* .caption {
   white-space: pre-wrap;
 }
 
@@ -238,15 +306,6 @@ export default {
   border-radius: 50%;
 }
 
-#text-panel .error-msg {
-    display: none;
-}
-
-#text-panel .error-msg .open {
-    display: block;
-    text-align: center;
-}
-
 #text-panel textarea {
   width: 100%;
   margin-top: 20px;
@@ -267,7 +326,7 @@ export default {
     width: 50%;
     border-radius: 45px;
     float: left;
-}
+} */
 
 /* .comments.edit button.cancel, .comments.edit button.delete {
     display: block;
@@ -275,15 +334,15 @@ export default {
     float: left;
 } */
 
-.originComments.edit button.delete {
-    /* width: 100%; */
-    background: #c21717;
+@media screen and (max-width:576px) {
+  .modal-fullscreen-sm-down {
+  height:auto
+}
 }
 
-#text-panel.new button.create, #text-panel.update button.create, #text-panel.update button.update {
-    background: #74be00;
-    border-radius: 45px;
-}
+
+
+
 
 
 

@@ -17,18 +17,18 @@
         <img :src="item" alt="tagPhotos" data-bs-toggle="modal" data-bs-target="#photoModal">
     </div>
   </div>
-  <!-- <timeLine v-if="$store.state.showModal"></timeLine> -->
+  <timeLine></timeLine>
   
 
 </template>
 
 <script>
-// import timeLine from './timeLine.vue'
+import timeLine from './timeLine.vue'
 export default {
   name: 'album',
-  // components:{
-  //   timeLine
-  // },
+  components:{
+    timeLine
+  },
   props: {
 
   },
@@ -125,6 +125,7 @@ export default {
   width: 100%;
   height: 100%;
   object-fit:cover;
+
 }
 
 .photos > img:hover, .tagPhotos > img:hover {

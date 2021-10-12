@@ -15,7 +15,7 @@
   <div id="user">
     <div class="user container-fluid row m-0">
       <div class="avatar col-3">
-        <img :src="$store.state.intro.avatar" alt="avatar">
+        <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal">
       </div>
       <div class="item col-9">
         <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
@@ -44,19 +44,22 @@
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
-    <timeLine v-if="$store.state.showModal"></timeLine>
+    <!-- <timeLine v-if="$store.state.showModal"></timeLine> -->
+    <storyLine></storyLine>
     
   </div>
 </template>
 
 <script>
 import album from './album.vue'
-import timeLine from './timeLine.vue'
+import storyLine from './storyLine.vue'
+// import timeLine from './timeLine.vue'
 export default {
   name: "userProfile",
   components: {
     album,
-    timeLine,
+    storyLine,
+    // timeLine,
   },
   props: {},
   data() {
@@ -84,6 +87,8 @@ export default {
   },
   mounted() {
     this.$store.dispatch('basicInfos', this.itemInfo);
+    
+
       // axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',
       // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       // .then(response => {
@@ -107,6 +112,7 @@ export default {
       //   console.log(error)
       // });
   },
+
 
 }
 </script>
@@ -146,7 +152,7 @@ export default {
 }
 
 .avatar > img{
-  width: 80px;
+  width: 90px;
   border-radius: 50%;
 }
 

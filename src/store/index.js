@@ -2,6 +2,9 @@ import { createStore } from 'vuex'
 import axios from 'axios';
 
 
+
+
+
 export default createStore({
   state: {
     rowData:[],
@@ -16,7 +19,7 @@ export default createStore({
     photos:[],
     tagPhotos:[],
 
-    showModal:false,
+    // showModal:false,
     eventID:null,
     eventInfo:{
       postID:null,
@@ -26,12 +29,21 @@ export default createStore({
     },
     eventData:[],
 
-    // isEdit:true,
     isTextarea:false,
+    errorMessage:[],
    
     activeComment:[],
     comments:[],
     commentInfo:[],
+
+
+    //story
+    storyIDs:[],
+    stories:[],
+    step:0,
+    duringTime:[],
+
+
 
 
 
@@ -53,8 +65,10 @@ export default createStore({
       });
     },
 
+
+
+    // open posted in album
     createModal(state, {currentItem, index}) {
-      state.showModal = true; 
       state.eventID = index;
       state.eventInfo.photo = currentItem;
       state.eventInfo.postID = state.rowData[state.eventID].id;
@@ -63,11 +77,9 @@ export default createStore({
 
       state.eventData = Object.assign([], state.eventInfo);
       console.log(state.eventData);
-      // state.currentData.photo = currentItem;
-      // state.currentData.caption = Object.assign([], state.rowData[state.modalID].caption);
-      // state.currentData.like = state.rowData[state.modalID].like_count
     },
 
+    // open posted in tag
     createTagModal(state, {currentItem, index}) {
       state.showModal = true; 
       state.eventID = index;
@@ -93,7 +105,7 @@ export default createStore({
 
     },
 
-    // show the create comments immediately in post
+    // show the created comments immediately in post
     putComments(state, id) {
       if (state.comments[state.eventID].length == 0) {
         var newOrder = 0; 
@@ -112,31 +124,38 @@ export default createStore({
           "text":state.commentInfo, 
           "like_count": 0,
         };
-      }
-      console.log(state.comments)
+      };
+      console.log(state.comments);
     },
 
-    // remove the create comments immediately in post
+    // remove the created comments immediately in post
     removeComments(state) {
       state.comments[state.eventID].splice(state.activeComment, 1);
     },
 
-    //use in Vuex strict mode
-    createComment(state, newComment) {
-      state.commentInfo = newComment;
-    },
+    
 
+
+    // delete & cancel for comments
     editMode(state, index) {
       state.activeComment = index;
-      console.log(state.activeComment)
+      console.log(state.activeComment);
 
     },
 
     cancel(state) {
       state.activeComment = null;
-      console.log(state.activeComment)
+      console.log(state.activeComment);
     },
 
+    closeEditMode(state) {
+      state.activeComment = null;
+    },
+
+    // commit & cancel for comments 
+    createComment(state, newComment) {
+      state.commentInfo = newComment;
+    },
 
     openTextarea(state) {
       state.isTextarea = !state.isTextarea;
@@ -146,11 +165,73 @@ export default createStore({
     closeTextarea(state) {
       state.isTextarea = false;
       state.activeComment = null;
+      state.errorMessage = null;
     },
 
-    closeEditMode(state) {
-      state.activeComment = null;
-    }
+    //story
+    //get stories id
+    GetStoriesId(state, storyID) {
+      var storyIdCount = storyID.length;
+      
+      for (var i = 0; i<storyIdCount; i++) {
+        state.storyIDs[i] = storyID[i].id;
+      };
+
+      console.log(state.storyIDs);
+    },
+
+    // get stories data 
+    putStoryData(state, data) {
+      for (let i=0; i<data.length; i++) {
+         state.stories[i] = {
+          id: data[i].id,
+          media_type: data[i].media_type,
+          media_url: data[i].media_url,
+          timestamp: data[i].timestamp,
+        }
+      };
+
+      const orderByTime_stories = state.stories.sort((a, b) => {
+        return a.timestamp > b.timestamp ? 1 : -1;
+      });
+      
+      state.stories = orderByTime_stories;
+
+      console.log(state.stories);  
+      console.log(data);
+    },
+
+    // calculate time of stories 
+    calStoryTime(state, step) {
+      var nowTime = {
+        hr:new Date().getHours(),
+        min:new Date().getMinutes(),
+        sec: new Date().getSeconds(),
+      };
+
+      var postTime = {
+          hr: new Date(state.stories[step].timestamp).getHours(),
+          min: new Date(state.stories[step].timestamp).getMinutes(),
+          sec: new Date(state.stories[step].timestamp).getSeconds(),
+      };
+
+      if (nowTime['hr']>postTime['hr']) {
+        state.duringTime = nowTime['hr'] - postTime['hr'] + '小時';}
+
+        else if (nowTime['hr']==postTime['hr'] && nowTime['min']>postTime['min']) {
+        state.duringTime = nowTime['min'] - postTime['min'] + '分';}
+
+        else if (nowTime['hr']==postTime['hr'] && nowTime['min']==postTime['min']) {
+        state.duringTime = nowTime['sec'] - postTime['sec'] + '秒';}
+
+        else {
+        state.duringTime = nowTime['hr'] - postTime['hr'] + 24 + '小時';};
+
+        console.log(state.duringTime);
+        console.log(postTime);
+        console.log(nowTime);
+    },
+
 
   },
   actions: {
@@ -223,7 +304,8 @@ export default createStore({
         
       })
       .catch(error => {
-        console.log(error);
+        console.log(error.response.data);
+        state.errorMessage = error.response.data;
       });
     },
     
@@ -234,14 +316,81 @@ export default createStore({
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         // this.dispatch('readComment')
-        commit('removeComments')
-        commit('closeEditMode')
+        commit('removeComments');
+        commit('closeEditMode');
         console.log(response.data);
       })
       .catch(error => {
         console.log(error);
       });
     },
+
+    //stories 
+    stories({commit, dispatch}) {
+      axios.get('http://localhost:8080/demo_hw/vue_ig/API/story.php',
+      {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        console.log(response.data.data)
+        commit('GetStoriesId', response.data.data)
+        dispatch('storiesInfo')
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+
+    storiesInfo({state, commit}) {
+      let promises = [];
+      let storyInfos = [];
+      for (var i = 0; i<state.storyIDs.length; i++) {
+        promises.push(
+          axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
+          {id: state.storyIDs[i]},
+          {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+          .then(response => {
+            storyInfos.push(response.data)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+        )
+      }
+      Promise.all(promises)
+      .then(() => {
+        commit('putStoryData', storyInfos)
+        commit('calStoryTime', state.step)
+        console.log(storyInfos)
+      });
+
+      // let data = await Promise.all(state.storyIDs.forEach(id => {
+      //   return axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
+      //   {id: id},
+      //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      //   .then(response => {
+      //     console.log(response.data)
+      //   })
+      //   .catch(error => {
+      //     console.log(error);
+      //   })
+      // }))
+
+      // console.log(data)
+
+    },
+
+
+
+    // storiesInfo() {
+    //   axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
+    //   {id: ["17954185777510735","17969347483452961"]},
+    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+    //   .then(response => {
+    //     console.log(response.data);
+    //   })
+    //   .catch(error => {
+    //     console.log(error);
+    //   });
+    // },
 
 
   },
