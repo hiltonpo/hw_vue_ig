@@ -182,7 +182,6 @@ export default {
   display: flex;
   align-items: center;
   padding-left: 10px;
-
 }
 
 .modal-body {
@@ -193,9 +192,16 @@ export default {
   padding-bottom: 8px;
 }
 
-.symbol .heart {
-  margin-right: 8px;
+.symbol {
+  font-size: 18px;
 }
+
+.symbol .comment {
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+
 
 .like {
   padding-bottom: 10px;
@@ -242,7 +248,7 @@ export default {
     display: none;
 }
 
-#text-panel .error-msg .open {
+#text-panel .error-msg.open {
     display: block;
     text-align: center;
 }

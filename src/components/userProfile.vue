@@ -14,28 +14,16 @@
   </div>
   <div id="user">
     <div class="user container-fluid row m-0">
-      <div class="avatar col-3">
-        <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal">
+      <div class="avatar col-3" >
+        <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
+        :class="[$store.state.stories ? 'story' : '']">
       </div>
       <div class="item col-9">
         <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
           {{item.value}} <br>
           {{item.title}}
         </div>
-        <!-- <div class="item-name col-3" v-for="(item, index) in itemName" :key="index">{{item}}</div> -->
       </div>
-
-      
-      <!-- <div class="col-3">
-        <p>avatar</p>
-        <p>200</p>
-      </div>
-      <div class="col-3">
-        <div>22222</div>
-        <div class="post">貼文</div>
-      </div>
-      <div class="col-3">f</div>
-      <div class="col-3">fo</div> -->
     </div>
     <div class="personal-info container-fluid row">
       {{$store.state.intro.name}}
@@ -44,7 +32,6 @@
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
-    <!-- <timeLine v-if="$store.state.showModal"></timeLine> -->
     <storyLine></storyLine>
     
   </div>
@@ -53,13 +40,11 @@
 <script>
 import album from './album.vue'
 import storyLine from './storyLine.vue'
-// import timeLine from './timeLine.vue'
 export default {
   name: "userProfile",
   components: {
     album,
     storyLine,
-    // timeLine,
   },
   props: {},
   data() {
@@ -87,30 +72,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch('basicInfos', this.itemInfo);
-    
-
-      // axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',
-      // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      // .then(response => {
-      //   console.log(response.data)
-      //   let posts = response.data.business_discovery.media_count;
-      //   let followers = response.data.business_discovery.followers_count;
-      //   let follows = response.data.business_discovery.follows_count;
-        
-      //   this.$store.state.rowData = response.data.business_discovery.media.data
-      //   this.$store.state.intro.username = response.data.business_discovery.username;
-      //   this.$store.state.intro.avatar = response.data.business_discovery.profile_picture_url;
-      //   this.$store.state.intro.name = response.data.business_discovery.name;
-      //   this.$store.state.intro.biography = response.data.business_discovery.biography;
-
-      //   this.itemInfo[0].value = posts;
-      //   this.itemInfo[1].value = followers;
-      //   this.itemInfo[2].value = follows;
-      //   this.$store.commit('photoInfos')
-      // })
-      // .catch(error => {
-      //   console.log(error)
-      // });
   },
 
 
@@ -154,6 +115,12 @@ export default {
 .avatar > img{
   width: 90px;
   border-radius: 50%;
+}
+
+.avatar >img.story {
+  padding: 2px;
+  border: 2px solid red;
+  cursor: pointer;
 }
 
 .item {

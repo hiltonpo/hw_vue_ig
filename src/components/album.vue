@@ -61,24 +61,9 @@ export default {
   },
   created() {
     window.addEventListener("scroll", this.scroll);
-
-    // this.$store.dispatch('readComment')
-
   },
   mounted() {
     this.$store.dispatch('tagInfos')
-
-    // this.$store.dispatch('readComment')
-    // axios.post('http://localhost:8080/demo_hw/vue_ig/API/mentions.php',
-    // {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    // .then(response => {
-    //   console.log(response.data)
-    //   this.$store.state.rowTagData = response.data.data
-    //   this.$store.commit('tagPhotoInfos', this.$store.state.rowTagData)
-    // })
-    // .catch(error => {
-    //   console.log(error)
-    // });
   },
 
       

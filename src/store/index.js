@@ -7,6 +7,8 @@ import axios from 'axios';
 
 export default createStore({
   state: {
+
+    //album & tags
     rowData:[],
     rowTagData:[],
     intro:{
@@ -19,7 +21,6 @@ export default createStore({
     photos:[],
     tagPhotos:[],
 
-    // showModal:false,
     eventID:null,
     eventInfo:{
       postID:null,
@@ -28,9 +29,10 @@ export default createStore({
       caption:null,
     },
     eventData:[],
-
+   
+    // comments
     isTextarea:false,
-    errorMessage:[],
+    errorMessage:null,
    
     activeComment:[],
     comments:[],
@@ -50,6 +52,7 @@ export default createStore({
   },
   mutations: {
     
+    // album & tags
     photoInfos(state) {
       state.rowData.forEach(photo => {
         state.photos.push(photo.media_url);    
@@ -64,8 +67,6 @@ export default createStore({
         
       });
     },
-
-
 
     // open posted in album
     createModal(state, {currentItem, index}) {
@@ -315,7 +316,6 @@ export default createStore({
       {commentID: comment.id}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        // this.dispatch('readComment')
         commit('removeComments');
         commit('closeEditMode');
         console.log(response.data);
@@ -361,37 +361,7 @@ export default createStore({
         commit('calStoryTime', state.step)
         console.log(storyInfos)
       });
-
-      // let data = await Promise.all(state.storyIDs.forEach(id => {
-      //   return axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
-      //   {id: id},
-      //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      //   .then(response => {
-      //     console.log(response.data)
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   })
-      // }))
-
-      // console.log(data)
-
     },
-
-
-
-    // storiesInfo() {
-    //   axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
-    //   {id: ["17954185777510735","17969347483452961"]},
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-    // },
-
 
   },
   modules: {
