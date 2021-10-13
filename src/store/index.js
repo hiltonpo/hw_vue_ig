@@ -125,7 +125,7 @@ export default createStore({
           "text":state.commentInfo, 
           "like_count": 0,
         };
-      };
+      }
       console.log(state.comments);
     },
 
@@ -176,7 +176,7 @@ export default createStore({
       
       for (var i = 0; i<storyIdCount; i++) {
         state.storyIDs[i] = storyID[i].id;
-      };
+      }
 
       console.log(state.storyIDs);
     },
@@ -190,7 +190,7 @@ export default createStore({
           media_url: data[i].media_url,
           timestamp: data[i].timestamp,
         }
-      };
+      }
 
       const orderByTime_stories = state.stories.sort((a, b) => {
         return a.timestamp > b.timestamp ? 1 : -1;
@@ -226,7 +226,7 @@ export default createStore({
         state.duringTime = nowTime['sec'] - postTime['sec'] + '秒';}
 
         else {
-        state.duringTime = nowTime['hr'] - postTime['hr'] + 24 + '小時';};
+        state.duringTime = nowTime['hr'] - postTime['hr'] + 24 + '小時';}
 
         console.log(state.duringTime);
         console.log(postTime);

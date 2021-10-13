@@ -6,6 +6,6 @@ module.exports = {
   
     },
     publicPath: process.env.NODE_ENV === 'production'
-    ? '/vue_ig_demo/'
+    ? '/vue_ig/'
     : '/'
   }
