@@ -237,7 +237,7 @@ export default createStore({
   },
   actions: {
     accessToken() {
-      axios.get('http://localhost:8080/demo_hw/vue_ig/API/accessToken.php'
+      axios.get('https://graph.facebook.com/v11.0/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQCNng1tjklkxQ6HdWeS8iPg4j3v7FclcYL6rqalRbrO0imU5JfSvK2gtOpVoJimGITGkAKSlYNgr69akMCj7x0QbK9XzUvUbPe9abc8n1XJki6rmMDpvzRyaaCFBi18D-vCxATMuPd4CqpbUy5X9ieJE6BX_nlPWHgqlugKKS-xRzFPP2NNU65Wde6yBC-9nuMqURWeTHHNu9xWB34XIHjqGARmA_hU9TBl_kDSi78r_PCLRNVqiW5D1clvIbrViqh7rvxDt5b9F5gtwmpQSYiIBRjWDhKMUeGu6jh8RDhKJZNgeOEZCFsGOTzi7jOP71It4lnO08ywHkvzh06Gorah9FKZNA9Pw-WTjTJAUw_ptKsTIs-2u6sWN0IiIt6hbYQ'
       ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response)

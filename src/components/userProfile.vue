@@ -16,7 +16,7 @@
     <div class="user container-fluid row m-0">
       <div class="avatar col-3" >
         <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
-        :class="[$store.state.stories ? 'story' : '']">
+        :class="[$store.state.stories ? 'story' : '[]']">
       </div>
       <div class="item col-9">
         <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
@@ -32,7 +32,7 @@
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
-    <storyLine></storyLine>
+    <storyLine v-if="$store.state.stories"></storyLine>
     
   </div>
 </template>

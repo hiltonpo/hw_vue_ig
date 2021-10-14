@@ -8,7 +8,7 @@
     $creds = array(
         'app_id' => FACEBOOK_APP_ID,
         'app_secret' => FACEBOOK_APP_SECRET,
-        'default_graph_version' => 'v3.2',
+        'default_graph_version' => 'v11.0',
         'persistent_data_handler' => 'session'
     );
 
@@ -38,6 +38,12 @@
             }
         }
 
+        echo '<pre>';
+        var_dump( $accessToken );
+
+        $accessToken = (string) $accessToken;
+        echo '<h1>Long Lived Access Token</h1>';
+        print_r( $accessToken );
     } else { // display login url
         $permissions = [
             'public_profile', 
@@ -45,15 +51,14 @@
             'pages_show_list', 
             'instagram_manage_insights', 
             'instagram_manage_comments', 
-            'manage_pages',
             'ads_management', 
             'business_management', 
             'instagram_content_publish', 
             'pages_read_engagement'
         ];
         $loginUrl = $helper->getLoginUrl( FACEBOOK_REDIRECT_URI, $permissions );
-
+    
+        echo '<a href="' . $loginUrl . '">
+            Login With Facebook
+        </a>';
     }
-
-    $response = $longinUrl;
-    echo $response;
