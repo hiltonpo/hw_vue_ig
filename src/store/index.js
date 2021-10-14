@@ -236,6 +236,18 @@ export default createStore({
 
   },
   actions: {
+    accessToken() {
+      axios.get('http://localhost:8080/demo_hw/vue_ig/API/accessToken.php'
+      ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+
+
     // basic information including username, follower, posts... (back-end)
     basicInfos({commit, state}, itemInfo) {
       axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',

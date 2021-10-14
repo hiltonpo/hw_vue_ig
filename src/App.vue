@@ -29,6 +29,9 @@ export default {
   methods:{
 
   },
+  created() {
+    this.$store.dispatch('accessToken')
+  }
 }
 </script>
 
