@@ -258,7 +258,7 @@ export default createStore({
 
     // basic information including username, follower, posts... (back-end)
     basicInfos({commit, state}, itemInfo) {
-      axios.post('localhost/demo_hw/vue_ig/API/business_discovery.php',
+      axios.get('api/17841400203867081?fields=business_discovery.username(hiltonpopo){username,website,name,ig_id,id,profile_picture_url,biography,follows_count,followers_count,media_count,media{caption,like_count,comments_count,media_url,permalink,media_type,timestamp}}&access_token=EAAEpATmnLkkBAL1N3VSJszPoxzrEW3DWUQauZATEQtaDDmZA3FmNmbf9VvGUTX8a3tFqNpJ0TyzTCwlzpZB0YQvjy6HVGBYQoMhrwlWAIidIVhZBpauHNCl9eTfxcCwm0kXE1LKqU2E3EON5tyzynidMhBUnB1RcTYMoFsqjZAB3It6om2ClgGJRqEj2sFMKZC2PLXejuNs1rZBkrxarvZCoTHXTcTGZCSyMJTzLHKonnGAZDZD',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data)
