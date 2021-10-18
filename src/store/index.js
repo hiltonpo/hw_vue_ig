@@ -236,24 +236,24 @@ export default createStore({
 
   },
   actions: {
-    // accessToken() {
-    //   axios.get('api/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQCe4heB06cZxpCIpCVV7VwRAYB_Q2PFKo4d6petzqp98nlzSWl-gMX9qrFJ-E4WNyWi0fFVpknko96a8QoZDZaGi-N00LAbghwyTTwWfc2ek23pkaoeJVFVhDYYhIQ94cBdiXZlJ81Z1b_h0P7PVWUMjH0Cor4Zs3BNyN_grdB6kz-zZ1aG8MfHemjWLyyYtnK8DfFv4WssEeBL5TVjG0kWK2PKWjQT7EAZiarJUB0-X3ykfRIK1osgiFwk-WcuYOnLzh2WhMn_PZ_K0an6yAlfed303nXK1fr-8_KsmvIRw05cFCyp1bfJzmURZojbQtlX5sJPpeFlhPAr6Dp_Qp_dgOj6PgFtOaIsyaroorB8tnKrzFK0P9NZL8zfMX9_140'
-    //   ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //   //   if (response.status === 302) {
-    //   //     window.location.href = response.request.responseURL;
-    //   //     console.log(window.location.href)
-    //   // }
-    //   console.log(response.data)
-    //   })
-    //   .catch(error => {
-    //     console.log(error.request);
-    //     // if (typeof error.response === 'undefined') {
-    //     //   location.href = 'http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
-    //     //   console.log(location.href)
-    //     // }
-    //   });
-    // },
+    accessToken() {
+      axios.get('api/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQBSqbtLuXO1Qk7YA7jfJsdKlVnBDLP-2HqBSn74vaERTW5WksFiKD7jcFxeghUeT2Erz6w-G860wNvM8XcoUBfAYnIBizcwM_rOJxJ5xiK-gGFWDMqJMTlkMSDKCPNSK6eo_hhhDkdPX0ZYU06fjjKIptNdiriZ_enYLbAe3J2ceMCOJGt6g9IWyMh1bh7bTBBoCCOUlS149l0-9qTUZIuXeop439HY1uQNxjjrv8VnN4OIoI_K7WfmKuGEWvQTJWU-3KSpMQ3YhSjR5HH7X0Ch3PY8YPOVAtcbsv-GY4qVrsNb_V8aMPMwRtxWB4OUAd6HDWZvWHjylONamdY-1t_GidLWth2aoueHfQkz2roEeKd9JJCzNRcjtZqH8obvtY0&state=719ea74f77d8c508b1f3038edf78b4a4'
+      ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+      //   if (response.status === 302) {
+      //     window.location.href = response.request.responseURL;
+      //     console.log(window.location.href)
+      // }
+      console.log(response.data)
+      })
+      .catch(error => {
+        console.log(error.request);
+        // if (typeof error.response === 'undefined') {
+        //   location.href = 'http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
+        //   console.log(location.href)
+        // }
+      });
+    },
 
 
     // basic information including username, follower, posts... (back-end)

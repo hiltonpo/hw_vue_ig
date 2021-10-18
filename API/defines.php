@@ -7,7 +7,7 @@
 	define( 'ENDPOINT_BASE', 'https://graph.facebook.com/v11.0/' );
 
 	// accessToken
-	$accessToken = 'EAAEpATmnLkkBAEonWCQS6iRvTyYPiuLqvgYZCBQE28iZCLMpnZBaniR9StNVATxzuUjbFfgDCckm9uibse0vB87ajAxJwFmlj7sBD8mtVQi0OTnJ5i6b2hzZCIN0YmVtpsqThAhNEgY9gbtrE1ZBjnyd5JXiVnqoZBkrRCZBTzOGRTnTX6YdyIZCyieHt0trwPDZAPUvsc2FZCfZBD9D2z1ffu0NKQhihV8gU4iUZBOam7WbhwZDZD';
+	$accessToken = 'EAAEpATmnLkkBAK4qVZAWzIfmvF6ohPEBZBvC9KZBgBYtZB6R1sZABLhPr8GRnbY3tHa4r52A7ncEF41u2uDGU3cW2ed38oc5GnDiypXvuycMKodFNOsK6h6MKL6WZBUtXlrhBksSWaAWZBPdKm5XeKQ16VrkjyyFzPfZCMMYaxGzidAZCu8P4NU1hlUUtRwBvaLul4J32VoHZB4IlfQNSpMSzbKI7MiSbeGZCSMpQj1CGTgMwZDZD';
 	
 	// page id
 	$pageId = '109873001369945';
