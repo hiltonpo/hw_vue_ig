@@ -41,9 +41,9 @@ export default createStore({
 
     //story
     storyIDs:[],
-    stories:[],
+    stories:null,
     step:0,
-    duringTime:[],
+    duringTime:null,
 
 
 
@@ -236,21 +236,29 @@ export default createStore({
 
   },
   actions: {
-    accessToken() {
-      axios.get('https://graph.facebook.com/v11.0/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQCNng1tjklkxQ6HdWeS8iPg4j3v7FclcYL6rqalRbrO0imU5JfSvK2gtOpVoJimGITGkAKSlYNgr69akMCj7x0QbK9XzUvUbPe9abc8n1XJki6rmMDpvzRyaaCFBi18D-vCxATMuPd4CqpbUy5X9ieJE6BX_nlPWHgqlugKKS-xRzFPP2NNU65Wde6yBC-9nuMqURWeTHHNu9xWB34XIHjqGARmA_hU9TBl_kDSi78r_PCLRNVqiW5D1clvIbrViqh7rvxDt5b9F5gtwmpQSYiIBRjWDhKMUeGu6jh8RDhKJZNgeOEZCFsGOTzi7jOP71It4lnO08ywHkvzh06Gorah9FKZNA9Pw-WTjTJAUw_ptKsTIs-2u6sWN0IiIt6hbYQ'
-      ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      .then(response => {
-        console.log(response)
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    },
+    // accessToken() {
+    //   axios.get('api/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQCe4heB06cZxpCIpCVV7VwRAYB_Q2PFKo4d6petzqp98nlzSWl-gMX9qrFJ-E4WNyWi0fFVpknko96a8QoZDZaGi-N00LAbghwyTTwWfc2ek23pkaoeJVFVhDYYhIQ94cBdiXZlJ81Z1b_h0P7PVWUMjH0Cor4Zs3BNyN_grdB6kz-zZ1aG8MfHemjWLyyYtnK8DfFv4WssEeBL5TVjG0kWK2PKWjQT7EAZiarJUB0-X3ykfRIK1osgiFwk-WcuYOnLzh2WhMn_PZ_K0an6yAlfed303nXK1fr-8_KsmvIRw05cFCyp1bfJzmURZojbQtlX5sJPpeFlhPAr6Dp_Qp_dgOj6PgFtOaIsyaroorB8tnKrzFK0P9NZL8zfMX9_140'
+    //   ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+    //   .then(response => {
+    //   //   if (response.status === 302) {
+    //   //     window.location.href = response.request.responseURL;
+    //   //     console.log(window.location.href)
+    //   // }
+    //   console.log(response.data)
+    //   })
+    //   .catch(error => {
+    //     console.log(error.request);
+    //     // if (typeof error.response === 'undefined') {
+    //     //   location.href = 'http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
+    //     //   console.log(location.href)
+    //     // }
+    //   });
+    // },
 
 
     // basic information including username, follower, posts... (back-end)
     basicInfos({commit, state}, itemInfo) {
-      axios.post('http://localhost:8080/demo_hw/vue_ig/API/business_discovery.php',
+      axios.post('localhost/demo_hw/vue_ig/API/business_discovery.php',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data)
@@ -276,7 +284,7 @@ export default createStore({
 
     //tag photo information (back-end)
     tagInfos({commit, state}) {
-      axios.post('http://localhost:8080/demo_hw/vue_ig/API/mentions.php',
+      axios.post('localhost/demo_hw/vue_ig/API/mentions.php',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data);
@@ -290,7 +298,7 @@ export default createStore({
     },
     // readUI for comments (back-end)
     readComment({commit, state}) {
-      axios.post('http://localhost:8080/demo_hw/vue_ig/API/comment.php',
+      axios.post('localhost/demo_hw/vue_ig/API/comment.php',
       {mediaID: state.eventInfo.postID}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
@@ -305,7 +313,7 @@ export default createStore({
 
     //createUI for comments (back-end)
     postComment({commit, state}) {
-      axios.post('http://localhost:8080/demo_hw/vue_ig/API/createcomment.php',
+      axios.post('localhost/demo_hw/vue_ig/API/createcomment.php',
       {mediaID: state.eventData.postID,
       message:state.commentInfo}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -324,7 +332,7 @@ export default createStore({
     
     //deleteUI for comments (back-end)
     deleteComment({commit}, comment) {
-      axios.post('http://localhost:8080/demo_hw/vue_ig/API/deletecomment.php',
+      axios.post('localhost/demo_hw/vue_ig/API/deletecomment.php',
       {commentID: comment.id}, 
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
@@ -339,7 +347,7 @@ export default createStore({
 
     //stories 
     stories({commit, dispatch}) {
-      axios.get('http://localhost:8080/demo_hw/vue_ig/API/story.php',
+      axios.get('localhost/demo_hw/vue_ig/API/story.php',
       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data.data)
@@ -356,7 +364,7 @@ export default createStore({
       let storyInfos = [];
       for (var i = 0; i<state.storyIDs.length; i++) {
         promises.push(
-          axios.post('http://localhost:8080/demo_hw/vue_ig/API/storyInfo.php',
+          axios.post('localhost/demo_hw/vue_ig/API/storyInfo.php',
           {id: state.storyIDs[i]},
           {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
           .then(response => {
