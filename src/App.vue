@@ -30,6 +30,7 @@ export default {
 
   },
   created() {
+    // this.$store.dispatch('accessCode')
     this.$store.dispatch('accessToken')
   }
 }
