@@ -16,10 +16,10 @@
     <div class="user container-fluid row m-0">
       <div class="avatar col-3" >
         <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
-        :class="[$store.state.stories ? 'story' : '[]']">
+        :class="[$store.state.storyIDs ? 'story' : '']">
       </div>
       <div class="item col-9">
-        <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
+        <div class="item-info" v-for="(item, index) in $store.state.itemInfo" :key="index">
           {{item.value}} <br>
           {{item.title}}
         </div>
@@ -49,32 +49,12 @@ export default {
   props: {},
   data() {
     return {
-      itemInfo:[
-        {
-          title:'貼文',
-          value:''
-        },
-        {
-          title:'粉絲',
-          value:'',
-        },
-        {
-          title:'追蹤中',
-          value:''
-        }
-      ],
-
 
     }
   },
   methods:{
 
   },
-  mounted() {
-    this.$store.dispatch('basicInfos', this.itemInfo);
-  },
-
-
 }
 </script>
 

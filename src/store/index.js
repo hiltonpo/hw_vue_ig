@@ -7,8 +7,30 @@ import axios from 'axios';
 
 export default createStore({
   state: {
+    //fb login & access token
+    code:[],
+    accessToken:[],
+    userID:[],
+    igAccountID:[],
+
+
+
 
     //album & tags
+    itemInfo:[
+      {
+        title:'貼文',
+        value:''
+      },
+      {
+        title:'粉絲',
+        value:'',
+      },
+      {
+        title:'追蹤中',
+        value:''
+      }
+    ],
     rowData:[],
     rowTagData:[],
     intro:{
@@ -32,23 +54,15 @@ export default createStore({
    
     // comments
     isTextarea:false,
-    errorMessage:null,
-   
+    errorMessage:null,  
     activeComment:[],
     comments:[],
     commentInfo:[],
 
-
     //story
     storyIDs:[],
-    stories:null,
-    step:0,
-    duringTime:null,
-
-
-
-
-
+    stories:[],
+    duringTime:[],
   },
   mutations: {
     
@@ -57,14 +71,11 @@ export default createStore({
       state.rowData.forEach(photo => {
         state.photos.push(photo.media_url);    
       });
-
-      
     },
 
     tagPhotoInfos(state, tagPhoto) {
       tagPhoto.forEach(tagPhoto => {
         state.tagPhotos.push(tagPhoto.media_url);
-        
       });
     },
 
@@ -93,7 +104,7 @@ export default createStore({
       console.log(state.eventData);
     },
     
-    // read comments in post (front-end)
+    // read comments in post 
     getComments(state, comments) {
       // order by time in comments
       const orderByTime_comments = comments.sort((a, b) => {
@@ -134,14 +145,10 @@ export default createStore({
       state.comments[state.eventID].splice(state.activeComment, 1);
     },
 
-    
-
-
     // delete & cancel for comments
     editMode(state, index) {
       state.activeComment = index;
       console.log(state.activeComment);
-
     },
 
     cancel(state) {
@@ -177,108 +184,132 @@ export default createStore({
       for (var i = 0; i<storyIdCount; i++) {
         state.storyIDs[i] = storyID[i].id;
       }
-
       console.log(state.storyIDs);
     },
 
-    // get stories data 
+    // get stories data & stories' during time
     putStoryData(state, data) {
-      for (let i=0; i<data.length; i++) {
-         state.stories[i] = {
-          id: data[i].id,
-          media_type: data[i].media_type,
-          media_url: data[i].media_url,
-          timestamp: data[i].timestamp,
-        }
-      }
-
-      const orderByTime_stories = state.stories.sort((a, b) => {
+      const orderByTime_stories = data.sort((a, b) => {
         return a.timestamp > b.timestamp ? 1 : -1;
       });
-      
       state.stories = orderByTime_stories;
 
-      console.log(state.stories);  
-      console.log(data);
-    },
-
-    // calculate time of stories 
-    calStoryTime(state, step) {
-      var nowTime = {
+      let nowTime = {
         hr:new Date().getHours(),
         min:new Date().getMinutes(),
         sec: new Date().getSeconds(),
       };
 
-      var postTime = {
-          hr: new Date(state.stories[step].timestamp).getHours(),
-          min: new Date(state.stories[step].timestamp).getMinutes(),
-          sec: new Date(state.stories[step].timestamp).getSeconds(),
-      };
+      for (let i=0; i<data.length; i++) {
+        state.stories[i] = {
+          id: data[i].id,
+          media_type: data[i].media_type,
+          media_url: data[i].media_url,
+          timestamp: data[i].timestamp,
+          postTime: {
+            hr: new Date(data[i].timestamp).getHours(),
+            min: new Date(data[i].timestamp).getMinutes(),
+            sec: new Date(data[i].timestamp).getSeconds(),
+          }
+        };
 
-      if (nowTime['hr']>postTime['hr']) {
-        state.duringTime = nowTime['hr'] - postTime['hr'] + '小時';}
+        if (nowTime['hr']>state.stories[i].postTime['hr']) {
+          state.duringTime[i] = nowTime['hr'] - state.stories[i].postTime['hr'] + '小時';}
+  
+          else if (nowTime['hr'] == state.stories[i].postTime['hr'] && nowTime['min'] > state.stories[i].postTime['min']) {
+          state.duringTime[i] = nowTime['min'] - state.stories[i].postTime['min'] + '分鐘';}
+  
+          else if (nowTime['hr'] == state.stories[i].postTime['hr'] && nowTime['min'] == state.stories[i].postTime['min']) {
+          state.duringTime[i] = nowTime['sec'] - state.stories[i].postTime['sec'] + '秒';}
 
-        else if (nowTime['hr']==postTime['hr'] && nowTime['min']>postTime['min']) {
-        state.duringTime = nowTime['min'] - postTime['min'] + '分';}
+          else if (nowTime['hr'] == state.stories[i].postTime['hr'] && nowTime['min'] == state.stories[i].postTime['min']) {
+          state.duringTime[i] = nowTime['sec'] - state.stories[i].postTime['sec'] + '秒';}
+  
+          else {
+          state.duringTime[i] = nowTime['hr'] - state.stories[i].postTime['hr'] + 24 + '小時';}
+      }
 
-        else if (nowTime['hr']==postTime['hr'] && nowTime['min']==postTime['min']) {
-        state.duringTime = nowTime['sec'] - postTime['sec'] + '秒';}
-
-        else {
-        state.duringTime = nowTime['hr'] - postTime['hr'] + 24 + '小時';}
-
-        console.log(state.duringTime);
-        console.log(postTime);
-        console.log(nowTime);
+      console.log(state.stories);  
+      console.log(state.duringTime)
     },
 
 
   },
   actions: {
-    // accessToken() {
-    //   axios.get('http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
-    //   ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //   //   if (response.status === 302) {
-    //   //     window.location.href = response.request.responseURL;
-    //   //     console.log(window.location.href)
-    //   // }
-    //   console.log(response.data)
-    //   })
-    //   .catch(error => {
-    //     console.log(error.request);
-    //     if (typeof error.response === 'undefined') {
-    //       // location.href = 'http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
-    //       console.log(error.request.responseURL)
-    //     }
-    //   });
-    // },
+    async accessCode({state, dispatch}) {
+      // if code doesn't exist, then carry out Facebook login 
+      if (!window.location.search.substring(6)) {
+        window.location = 'token/dialog/oauth?client_id=326560215674441&redirect_uri=https://localhost:8080/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
+      }
+      // When Facebook login is done, get code form url
+      state.code = window.location.search.substring(6)
+      console.log(state.code)
 
-    // accessToken() {
-    //   axios.get('api/oauth/access_token?client_id=326560215674441&redirect_uri=https://example.com/&client_secret=66f2c6e3593d41fa78cd473dac4fb0f1&code=AQB6wJLDAu6BvGD2BY-An9V1A0vkQxZRBZLq9iltagw4CFZh-M4l3io2sZVPKz1SthK7_zzeBC5VS7L59ObzYsUafzuAaiafPyX4lUsIDGyUDcC5VNpUsGIAXfId-v077kWCuwukIiogsrS_Sfm7WRQcSn0IK--p2I_b10wBn_wgJu-YQj06kc0c7CIgFHhGqFnt2529PbFxL6GvZLB7BqfJ06KjrSJeIwjS52su8BIduZ4AzIJQwOOp-J9wYY6E_-obW5XXVxpCj3917rSBMD7Wrfezcqla4mZL2yXIBL3hfn5fp1AO8OQ_pV5UFoKxvELUvnPC2TYRAg4Uj9qtGdPRyJQk0CpFY05ZKiT0vU_0Vc_GQ1FvzIAWeYrfCsCA6qA'
-    //   ,{headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //   //   if (response.status === 302) {
-    //   //     window.location.href = response.request.responseURL;
-    //   //     console.log(window.location.href)
-    //   // }
-    //     console.log(response.data)
-    //   })
-    //   .catch(error => {
-    //     console.log(error.request);
-    //     // if (typeof error.response === 'undefined') {
-    //     //   location.href = 'http://www.facebook.com/v11.0/dialog/oauth?client_id=326560215674441&redirect_uri=https://example.com/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
-    //     //   console.log(error.request.responseURL)
-    //     // }
-    //   });
-    // },
+      await dispatch('accessToken')
+      await dispatch('getUserPage')
+      await dispatch('getIgAccountID')
+      
+      // Promise.all(dispatch('basicInfos')) 
+      dispatch('basicInfos')
+      dispatch('tagInfos')
+      dispatch('stories')
 
+      console.log(state.accessToken)
+      console.log(state.userID)
+      console.log(state.igAccountID)
+    },
 
-    // basic information including username, follower, posts... (back-end)
-    basicInfos({commit, state}, itemInfo) {
-      axios.get('api/17841400203867081?fields=business_discovery.username(hiltonpopo){username,website,name,ig_id,id,profile_picture_url,biography,follows_count,followers_count,media_count,media{caption,like_count,comments_count,media_url,permalink,media_type,timestamp}}&access_token=EAAEpATmnLkkBAOZCKR5MJDs2lkhWj9VK5iEgL5sW1WHprzihvCdMj6gXhZAZA10gNbW3nHCw0NEvtzYFsSKlVQBpuuTRLRixDzENaFwvZApaVxePcP5IPywmlqvyYpsZC7ma6ohzki8ymf3IpnfcfXMisJmZCIYcxhLzNTg24ZCcVayEFmZAKOJXEKyYyWyWBzaplusQ36tdtKp1rCj8Ay1eszZAaskQNgv0s9kxwXNVF3wZDZD',
-      {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+    accessToken({state}) {
+      return axios.get('api/oauth/access_token',
+      {params: {
+        client_id: '326560215674441',
+        redirect_uri: 'https://localhost:8080/',
+        client_secret: '66f2c6e3593d41fa78cd473dac4fb0f1',
+        code: state.code,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        state.accessToken = response.data.access_token
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+
+    getUserPage({state}) {
+      return axios.get('api/me/accounts',
+      {params: {
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        state.userID = response.data.data[0]['id']
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+
+     getIgAccountID({state}) {
+      return axios.get('api/' + state.userID,
+      {params: {
+        fields: 'instagram_business_account',
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        state.igAccountID = response.data['instagram_business_account']['id']
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+
+    // basic information including username, follower, posts... 
+    basicInfos({commit, state}) {
+      // await dispatch('accessCode')
+      axios.get('api/' + state.igAccountID,
+      {params:{
+        fields: 'business_discovery.username(hiltonpopo){username,website,name,ig_id,id,profile_picture_url,biography,follows_count,followers_count,media_count,media{caption,like_count,comments_count,media_url,permalink,media_type,timestamp}}',
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data)
         let posts = response.data.business_discovery.media_count;
@@ -291,9 +322,9 @@ export default createStore({
         state.intro.name = response.data.business_discovery.name;
         state.intro.biography = response.data.business_discovery.biography;
 
-        itemInfo[0].value = posts;
-        itemInfo[1].value = followers;
-        itemInfo[2].value = follows;
+        state.itemInfo[0].value = posts;
+        state.itemInfo[1].value = followers;
+        state.itemInfo[2].value = follows;
         commit('photoInfos');
       })
       .catch(error => {
@@ -301,107 +332,111 @@ export default createStore({
       });
     },
 
-    // //tag photo information (back-end)
-    // tagInfos({commit, state}) {
-    //   axios.post('localhost/demo_hw/vue_ig/API/mentions.php',
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     console.log(response.data);
-    //     state.rowTagData = response.data.data;
-    //     commit('tagPhotoInfos', state.rowTagData);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
+    //tag photo information 
+    tagInfos({commit, state}) {
+      axios.get('api/' + state.igAccountID + '/tags',
+      {params:{
+        fields: 'id,caption,username,media_url,like_count',
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        console.log(response.data);
+        state.rowTagData = response.data.data;
+        commit('tagPhotoInfos', state.rowTagData);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+    // readUI for comments 
+    readComment({commit, state}) {
+      axios.get('api/' + state.eventInfo.postID + '/comments',
+      {params:{
+        fields: 'id,username,text,like_count,replies,timestamp',
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        commit('getComments', response.data.data);
+        console.log(response.data.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });     
+    },
 
-    // },
-    // // readUI for comments (back-end)
-    // readComment({commit, state}) {
-    //   axios.post('localhost/demo_hw/vue_ig/API/comment.php',
-    //   {mediaID: state.eventInfo.postID}, 
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     commit('getComments', response.data.data);
-    //     console.log(response.data.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-
-    // },
-
-    // //createUI for comments (back-end)
-    // postComment({commit, state}) {
-    //   axios.post('localhost/demo_hw/vue_ig/API/createcomment.php',
-    //   {mediaID: state.eventData.postID,
-    //   message:state.commentInfo}, 
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     commit('putComments', response.data)
-    //     // dispatch('readComment')
-    //     console.log(response.data);
-    //     commit('closeTextarea')
+    //createUI for comments 
+    postComment({commit, state}) {
+      axios.post('api/' + state.eventData.postID + '/comments',
+      { message: state.commentInfo,
+        access_token: state.accessToken,})
+      .then(response => {
+        commit('putComments', response.data)
+        console.log(response.data);
+        commit('closeTextarea')
         
-    //   })
-    //   .catch(error => {
-    //     console.log(error.response.data);
-    //     state.errorMessage = error.response.data;
-    //   });
-    // },
+      })
+      .catch(error => {
+        console.log(error.response.data);
+        state.errorMessage = error.response.data;
+      });
+    },
     
-    // //deleteUI for comments (back-end)
-    // deleteComment({commit}, comment) {
-    //   axios.post('localhost/demo_hw/vue_ig/API/deletecomment.php',
-    //   {commentID: comment.id}, 
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     commit('removeComments');
-    //     commit('closeEditMode');
-    //     console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-    // },
+    //deleteUI for comments 
+    deleteComment({commit, state}, comment) {
+      axios.delete('api/' + comment.id ,
+      {data: {access_token: state.accessToken}})
+      .then(response => {
+        commit('removeComments');
+        commit('closeEditMode');
+        console.log(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
 
-    // //stories 
-    // stories({commit, dispatch}) {
-    //   axios.get('localhost/demo_hw/vue_ig/API/story.php',
-    //   {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //   .then(response => {
-    //     console.log(response.data.data)
-    //     commit('GetStoriesId', response.data.data)
-    //     dispatch('storiesInfo')
-    //   })
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
-    // },
+    //stories 
+    stories({commit, state, dispatch}) {
+      console.log(state.igAccountID)
+      axios.get('api/' + state.igAccountID + '/stories',
+      {params:{
+        access_token: state.accessToken,
+      }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      .then(response => {
+        console.log(response.data.data)
+        commit('GetStoriesId', response.data.data)
+        dispatch('storiesInfo')
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
 
-    // storiesInfo({state, commit}) {
-    //   let promises = [];
-    //   let storyInfos = [];
-    //   for (var i = 0; i<state.storyIDs.length; i++) {
-    //     promises.push(
-    //       axios.post('localhost/demo_hw/vue_ig/API/storyInfo.php',
-    //       {id: state.storyIDs[i]},
-    //       {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-    //       .then(response => {
-    //         storyInfos.push(response.data)
-    //       })
-    //       .catch(error => {
-    //         console.log(error);
-    //       })
-    //     )
-    //   }
-    //   Promise.all(promises)
-    //   .then(() => {
-    //     commit('putStoryData', storyInfos)
-    //     commit('calStoryTime', state.step)
-    //     console.log(storyInfos)
-    //   });
-    // },
-
+    storiesInfo({state, commit}) {
+      let promises = [];
+      let storyInfos = [];
+      for (var i = 0; i<state.storyIDs.length; i++) {
+        promises.push(
+          axios.get('api/' + state.storyIDs[i],
+          {params:{
+            fields: 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username',
+            access_token: state.accessToken,
+          }},
+          {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+          .then(response => {
+            storyInfos.push(response.data)
+          })
+          .catch(error => {
+            console.log(error);
+          })
+        )
+      }
+      Promise.all(promises)
+      .then(() => {
+        console.log(storyInfos)
+        commit('putStoryData', storyInfos)
+      });
+    },
   },
   modules: {
   }

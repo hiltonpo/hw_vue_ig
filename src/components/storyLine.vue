@@ -10,7 +10,7 @@
           </div>
           <div class="user-account">
             <div>限時動態</div>
-            <div class="duringTime">{{$store.state.duringTime}}</div>
+            <div class="duringTime">{{$store.state.duringTime[step]}}</div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
@@ -20,8 +20,8 @@
 
           <div class="stories" v-for="(story, index) in $store.state.stories" :key="index">
             
-            <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="$store.state.step===index" @click.capture="changeStory()">
-            <video controls :poster="story.thumbnail_url" v-else  v-show="$store.state.step===index" @click.capture="changeStory()">
+            <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="step===index" @click.capture="changeStory()">
+            <video controls :poster="story.thumbnail_url" v-else  v-show="step===index" @click.capture="changeStory()">
               <source :src="story.media_url"> 
             </video>
           </div>
@@ -44,38 +44,29 @@ export default {
   },
   data() {
     return{
+      step:0
       
     }
   },
   methods: {
 
     changeStory() {
-      if (this.$store.state.step < (this.$store.state.storyIDs.length-1) ) {
-        this.$store.state.step++
+      if (this.step < (this.$store.state.storyIDs.length-1) ) {
+        this.step++
       }
-
-      this.$store.commit('calStoryTime', this.$store.state.step)
-
-      console.log(this.$store.state.step)
+      console.log(this.step)
     },
 
     close() {
       setTimeout(() => {
-        this.$store.state.step = 0
-        this.$store.commit('calStoryTime', this.$store.state.step)
-      }, 1000)
-      
+        this.step = 0
+      }, 500)
     }
   },
 
   created() {
-    this.$store.dispatch('stories');
     this.close()
     
-  },
-
-  mounted() {
-
   },
 }
 </script>

@@ -1,6 +1,7 @@
 module.exports = {
     devServer: {
       // proxy:'https://www.facebook.com/v11.0/',
+      https: true,
       proxy: {
         '/api': {
           target: 'https://graph.facebook.com/v11.0',
@@ -22,6 +23,7 @@ module.exports = {
           target:'http://localhost:8888',
           changeOrigin: true,
           ws: true,
+          secure:false,
           pathRewrite:{'^/localhost':''},
         }
       }

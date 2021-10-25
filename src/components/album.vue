@@ -36,7 +36,6 @@ export default {
     return{
       active:false,
       toggle: 1,
-
     }
   },
   methods: {
@@ -57,16 +56,10 @@ export default {
         this.$store.commit('createTagModal', {currentItem, index});
       }
     }
-
   },
   created() {
     window.addEventListener("scroll", this.scroll);
   },
-  mounted() {
-    this.$store.dispatch('tagInfos')
-  },
-
-      
 }
 </script>
 

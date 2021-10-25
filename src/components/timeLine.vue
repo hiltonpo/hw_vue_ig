@@ -96,7 +96,6 @@ export default {
   data() {
     return{
       newClass:'new',
-
     }
   },
 
@@ -111,14 +110,12 @@ export default {
         this.$store.commit('createComment', value);
       },
     }
-
   },
 
 
   methods: {
 
     //delete & cancel
-
     edit(index) {
       this.$store.commit('editMode', index)
     },
@@ -133,7 +130,6 @@ export default {
     },
 
     //comment & cancel
-
     showTextarea() {
       this.$store.commit('openTextarea')
     },
@@ -145,21 +141,12 @@ export default {
     postComment() {
       this.$store.dispatch('postComment')     
     }
-
-
-
   },
   created() {
     this.$store.commit('cancel')
 
 
-  },
-  mounted() {
-    
-
-  },
-
-      
+  },     
 }
 </script>
 
