@@ -239,7 +239,7 @@ export default createStore({
     async accessCode({state, dispatch}) {
       // if code doesn't exist, then carry out Facebook login 
       if (!window.location.search.substring(6)) {
-        window.location = 'token/dialog/oauth?client_id=326560215674441&redirect_uri=https://hiltonpo.github.io/hw_vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
+        window.location = 'token/dialog/oauth?client_id=326560215674441&redirect_uri=https://localhost:8080/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
       }
       // When Facebook login is done, get code form url
       state.code = window.location.search.substring(6)
@@ -263,7 +263,7 @@ export default createStore({
       return axios.get('api/oauth/access_token',
       {params: {
         client_id: '326560215674441',
-        redirect_uri: 'https://localhost:8080/',
+        redirect_uri: 'https://hiltonpo.github.io/hw_vue_ig/',
         client_secret: '66f2c6e3593d41fa78cd473dac4fb0f1',
         code: state.code,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})

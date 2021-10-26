@@ -10,5 +10,5 @@ git init
 git add -A
 git commit -m 'deploy'
 # 部署到 https://github.com/hiltonpo/vue_ig 分支為 gh-pages
-git push -f https://github.com/hiltonpo/vue_ig master:gh-pages
+git push -f https://github.com/hiltonpo/hw_vue_ig master:gh-pages
 cd -
