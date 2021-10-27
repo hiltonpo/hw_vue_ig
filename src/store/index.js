@@ -382,8 +382,8 @@ export default createStore({
         
       })
       .catch(error => {
-        console.log(error.response.data);
-        state.errorMessage = error.response.data;
+        console.log(error.response.data.message);
+        state.errorMessage = error.response.data.substr(7);
       });
     },
     
