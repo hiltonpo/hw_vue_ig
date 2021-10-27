@@ -249,7 +249,6 @@ export default createStore({
       await dispatch('getUserPage')
       await dispatch('getIgAccountID')
       
-      // Promise.all(dispatch('basicInfos')) 
       dispatch('basicInfos')
       dispatch('tagInfos')
       dispatch('stories')
@@ -371,6 +370,7 @@ export default createStore({
 
     //createUI for comments 
     postComment({commit, state}) {
+      if (state.commentInfo.length != 0) {
       // axios.post('api/' + state.eventData.postID + '/comments',
       axios.post('https://graph.facebook.com/v11.0/' + state.eventData.postID + '/comments',
       { message: state.commentInfo,
@@ -382,9 +382,12 @@ export default createStore({
         
       })
       .catch(error => {
-        console.log(error.response.data.message);
-        state.errorMessage = error.response.data.message.substr(7);
-      });
+        console.log(error.response.data.error.message);
+        state.errorMessage = error.response.data.error.message.substr(7);
+      });}
+      else {
+        state.errorMessage = 'comment cannot be blank'
+      }
     },
     
     //deleteUI for comments 

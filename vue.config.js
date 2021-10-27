@@ -1,5 +1,6 @@
 module.exports = {
     devServer: {
+      // proxy:'https://www.facebook.com/v11.0/',
       https: true,
       // proxy: {
       //   '/api': {
@@ -26,6 +27,11 @@ module.exports = {
       //     pathRewrite:{'^/localhost':''},
       //   }
       // }
+
+
+
+      
+  
     },
 
     publicPath: process.env.NODE_ENV === 'production'
