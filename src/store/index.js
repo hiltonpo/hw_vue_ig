@@ -260,7 +260,8 @@ export default createStore({
     },
 
     accessToken({state}) {
-      return axios.get('api/oauth/access_token',
+      // return axios.get('api/oauth/access_token',
+      return axios.get('https://graph.facebook.com/v11.0/oauth/access_token',
       {params: {
         client_id: '326560215674441',
         redirect_uri: 'https://hiltonpo.github.io/hw_vue_ig/',
@@ -276,7 +277,8 @@ export default createStore({
     },
 
     getUserPage({state}) {
-      return axios.get('api/me/accounts',
+      // return axios.get('api/me/accounts',
+      return axios.get('https://graph.facebook.com/v11.0/me/accounts',
       {params: {
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -289,7 +291,8 @@ export default createStore({
     },
 
      getIgAccountID({state}) {
-      return axios.get('api/' + state.userID,
+      // return axios.get('api/' + state.userID,
+      return axios.get('https://graph.facebook.com/v11.0/' + state.userID,
       {params: {
         fields: 'instagram_business_account',
         access_token: state.accessToken,
@@ -304,8 +307,8 @@ export default createStore({
 
     // basic information including username, follower, posts... 
     basicInfos({commit, state}) {
-      // await dispatch('accessCode')
-      axios.get('api/' + state.igAccountID,
+      // axios.get('api/' + state.igAccountID,
+      axios.get('https://graph.facebook.com/v11.0/' + state.igAccountID,
       {params:{
         fields: 'business_discovery.username(hiltonpopo){username,website,name,ig_id,id,profile_picture_url,biography,follows_count,followers_count,media_count,media{caption,like_count,comments_count,media_url,permalink,media_type,timestamp}}',
         access_token: state.accessToken,
@@ -334,7 +337,8 @@ export default createStore({
 
     //tag photo information 
     tagInfos({commit, state}) {
-      axios.get('api/' + state.igAccountID + '/tags',
+      // axios.get('api/' + state.igAccountID + '/tags',
+      axios.get('https://graph.facebook.com/v11.0/' + state.igAccountID + '/tags',
       {params:{
         fields: 'id,caption,username,media_url,like_count',
         access_token: state.accessToken,
@@ -350,7 +354,8 @@ export default createStore({
     },
     // readUI for comments 
     readComment({commit, state}) {
-      axios.get('api/' + state.eventInfo.postID + '/comments',
+      // axios.get('api/' + state.eventInfo.postID + '/comments',
+      axios.get('https://graph.facebook.com/v11.0/' + state.eventInfo.postID + '/comments',
       {params:{
         fields: 'id,username,text,like_count,replies,timestamp',
         access_token: state.accessToken,
@@ -366,7 +371,8 @@ export default createStore({
 
     //createUI for comments 
     postComment({commit, state}) {
-      axios.post('api/' + state.eventData.postID + '/comments',
+      // axios.post('api/' + state.eventData.postID + '/comments',
+      axios.post('https://graph.facebook.com/v11.0/' + state.eventData.postID + '/comments',
       { message: state.commentInfo,
         access_token: state.accessToken,})
       .then(response => {
@@ -383,7 +389,8 @@ export default createStore({
     
     //deleteUI for comments 
     deleteComment({commit, state}, comment) {
-      axios.delete('api/' + comment.id ,
+      // axios.delete('api/' + comment.id ,
+      axios.delete('https://graph.facebook.com/v11.0/' + comment.id ,
       {data: {access_token: state.accessToken}})
       .then(response => {
         commit('removeComments');
@@ -398,7 +405,8 @@ export default createStore({
     //stories 
     stories({commit, state, dispatch}) {
       console.log(state.igAccountID)
-      axios.get('api/' + state.igAccountID + '/stories',
+      // axios.get('api/' + state.igAccountID + '/stories',
+      axios.get('https://graph.facebook.com/v11.0/' + state.igAccountID + '/stories',
       {params:{
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
@@ -417,7 +425,8 @@ export default createStore({
       let storyInfos = [];
       for (var i = 0; i<state.storyIDs.length; i++) {
         promises.push(
-          axios.get('api/' + state.storyIDs[i],
+          // axios.get('api/' + state.storyIDs[i],
+          axios.get('https://graph.facebook.com/v11.0/' + state.storyIDs[i],
           {params:{
             fields: 'caption,id,media_type,media_url,permalink,thumbnail_url,timestamp,username',
             access_token: state.accessToken,
