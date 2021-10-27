@@ -16,7 +16,7 @@
     <div class="user container-fluid row m-0">
       <div class="avatar col-3" >
         <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
-        :class="[$store.state.storyIDs ? 'story' : '']">
+        :class="[$store.state.storyIDs.length != 0 ? 'story' : '']">
       </div>
       <div class="item col-9">
         <div class="item-info" v-for="(item, index) in $store.state.itemInfo" :key="index">
