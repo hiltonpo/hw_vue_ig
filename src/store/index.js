@@ -383,7 +383,7 @@ export default createStore({
       })
       .catch(error => {
         console.log(error.response.data.message);
-        state.errorMessage = error.response.data.substr(7);
+        state.errorMessage = error.response.data.message.substr();
       });
     },
     
