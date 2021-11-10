@@ -6,20 +6,22 @@
       <div class="modal-header">
         <div class="littleInfo">
           <div class="user-pic">
-            <img :src="$store.state.intro.avatar" alt="photo">
+            <img :src="avatar" alt="photo">
           </div>
           <div class="user-account">
             <div>限時動態</div>
-            <div class="duringTime">{{$store.state.duringTime[step]}}</div>
+            <div class="duringTime">{{duringTime}}</div>
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
       </div>
+      <div class="time-bar row m-0">
+        <li v-for="(item, index) in stories.length" :key="index" :style="{'width': 'calc(' + (100-2)/stories.length  + '%)'}"
+        :class="[step == index ? 'chosen' : '']"></li>
+      </div>
       <div class="modal-body">
-        <div class="container-fluid">
-
-          <div class="stories" v-for="(story, index) in $store.state.stories" :key="index">
-            
+        <div class="container-fluid p-0">
+          <div class="stories" v-for="(story, index) in stories" :key="index">
             <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="step===index" @click.capture="changeStory()">
             <video controls :poster="story.thumbnail_url" v-else  v-show="step===index" @click.capture="changeStory()">
               <source :src="story.media_url"> 
@@ -37,17 +39,25 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name: 'storyLine',
-  props: {
-    
-  },
   data() {
     return{
       step:0
-      
     }
   },
+  computed:{
+    duringTime() {
+      return this.$store.state.duringTime[this.step] 
+
+    },
+    ...mapState({
+    avatar: state => state.intro.avatar,
+    stories: 'stories'
+    }),
+  },
+
   methods: {
 
     changeStory() {
@@ -66,7 +76,6 @@ export default {
 
   created() {
     this.close()
-    
   },
 }
 </script>
@@ -101,20 +110,28 @@ export default {
   display: flex;
 }
 
-.stories {
-  padding-bottom: 8px;
-}
-
 .stories > img, video{
   width: 100%;
   height: 100%;
   object-fit:cover;
 }
 
+.time-bar > li {
+  margin: 0 auto;
+  height: 3px;
+  /* width: 49%; */
+  list-style: none;
+  background-color: gray;
+}
+
+.time-bar > li.chosen {
+  background-color: rgba(199, 197, 197, 0.767);
+}
+
 @media screen and (max-width:576px) {
   .modal-fullscreen-sm-down {
   height:auto
-}
+  }
 }
 
 </style>

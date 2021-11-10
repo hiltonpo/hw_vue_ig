@@ -13,18 +13,9 @@ export default {
     userProfile,
     footers,
   },
-  data() {
-    return{
-
-    }
-  },
-  methods:{
-
-  },
   created() {
     this.$store.dispatch('accessCode'); 
   },
-
 }
 </script>
 
@@ -33,7 +24,4 @@ body {
   height: 100%;
   padding-right: 0 !important
 }
-
-
-
 </style>

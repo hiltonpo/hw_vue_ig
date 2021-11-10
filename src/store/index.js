@@ -5,34 +5,22 @@ import axios from 'axios';
 
 
 
+
 export default createStore({
   state: {
-    //fb login & access token
-    code:[],
+    //access-token & user and account id
     accessToken:[],
     userID:[],
     igAccountID:[],
 
-
-
-
     //album & tags
     itemInfo:[
-      {
-        title:'貼文',
-        value:''
-      },
-      {
-        title:'粉絲',
-        value:'',
-      },
-      {
-        title:'追蹤中',
-        value:''
-      }
+      {title:'貼文', value:''},
+      {title:'粉絲', value:''},
+      {title:'追蹤中', value:''},
     ],
-    rowData:[],
-    rowTagData:[],
+    totalData:[],
+    tagData:[],
     intro:{
       username:null,
       avatar:null,
@@ -57,6 +45,7 @@ export default createStore({
     errorMessage:null,  
     activeComment:[],
     comments:[],
+    replies:[],
     commentInfo:[],
 
     //story
@@ -65,16 +54,46 @@ export default createStore({
     duringTime:[],
   },
   mutations: {
+
+    // get accessToken
+    getAccessToken(state, access_token) {
+      state.accessToken = access_token;
+    },
+
+    getUserID(state, userID) {
+      state.userID = userID;
+    },
+
+    getAccountID(state, accountID) {
+      state.igAccountID = accountID;
+    },
     
-    // album & tags
+    // metaData, information, album and tags
+    getMetaData(state, metaData) {
+      state.totalData = metaData.media.data;
+      
+      state.intro.username = metaData.username;
+      state.intro.avatar = metaData.profile_picture_url;
+      state.intro.name = metaData.name;
+      state.intro.biography = metaData.biography;
+
+      state.itemInfo[0].value = metaData.media_count;
+      state.itemInfo[1].value = metaData.followers_count;
+      state.itemInfo[2].value = metaData.follows_count;
+    },
+
+    getTagData(state, tagData) {
+      state.tagData = tagData;
+    },
+
     photoInfos(state) {
-      state.rowData.forEach(photo => {
+      state.totalData.forEach(photo => {
         state.photos.push(photo.media_url);    
       });
     },
 
-    tagPhotoInfos(state, tagPhoto) {
-      tagPhoto.forEach(tagPhoto => {
+    tagPhotoInfos(state) {
+      state.tagData.forEach(tagPhoto => {
         state.tagPhotos.push(tagPhoto.media_url);
       });
     },
@@ -83,9 +102,9 @@ export default createStore({
     createModal(state, {currentItem, index}) {
       state.eventID = index;
       state.eventInfo.photo = currentItem;
-      state.eventInfo.postID = state.rowData[state.eventID].id;
-      state.eventInfo.caption = state.rowData[state.eventID].caption;
-      state.eventInfo.like = state.rowData[state.eventID].like_count;
+      state.eventInfo.postID = state.totalData[state.eventID].id;
+      state.eventInfo.caption = state.totalData[state.eventID].caption;
+      state.eventInfo.like = state.totalData[state.eventID].like_count;
 
       state.eventData = Object.assign([], state.eventInfo);
       console.log(state.eventData);
@@ -96,9 +115,9 @@ export default createStore({
       state.showModal = true; 
       state.eventID = index;
       state.eventInfo.photo = currentItem;
-      state.eventInfo.postID = state.rowData[state.eventID].id;
-      state.eventInfo.caption = state.rowTagData[state.eventID].caption;
-      state.eventInfo.like = state.rowTagData[state.eventID].like_count;
+      state.eventInfo.postID = state.tagData[state.eventID].id;
+      state.eventInfo.caption = state.tagData[state.eventID].caption;
+      state.eventInfo.like = state.tagData[state.eventID].like_count;
 
       state.eventData = Object.assign([], state.eventInfo);
       console.log(state.eventData);
@@ -106,15 +125,24 @@ export default createStore({
     
     // read comments in post 
     getComments(state, comments) {
+      
       // order by time in comments
       const orderByTime_comments = comments.sort((a, b) => {
-        return a.timestamp > b.timestamp ? 1 : -1;
+        return a.timestamp < b.timestamp ? 1 : -1;
       })
       // put ordered comments in post
       state.comments[state.eventID] = Object.assign([], orderByTime_comments);
       console.log(state.comments);
       console.log(state.eventID);
+    },
 
+    getReplies(state, replies) {
+      for (var i = 0; i<replies.length; i++) {
+        state.replies.push(replies[i].sort((a, b) => {
+          return a.timestamp > b.timestamp ? 1 : -1;
+        }))
+      }
+      console.log(state.replies)
     },
 
     // show the created comments immediately in post
@@ -138,6 +166,10 @@ export default createStore({
         };
       }
       console.log(state.comments);
+    },
+    // show error when comment is blank
+    showErr(state, error) {
+      state.errorMessage = error;
     },
 
     // remove the created comments immediately in post
@@ -213,11 +245,15 @@ export default createStore({
           }
         };
 
+        // calculate during time
         if (nowTime['hr']>state.stories[i].postTime['hr']) {
           state.duringTime[i] = nowTime['hr'] - state.stories[i].postTime['hr'] + '小時';}
-  
+        
           else if (nowTime['hr'] == state.stories[i].postTime['hr'] && nowTime['min'] > state.stories[i].postTime['min']) {
           state.duringTime[i] = nowTime['min'] - state.stories[i].postTime['min'] + '分鐘';}
+
+          else if (nowTime['hr'] + 1 == state.stories[i].postTime['hr'] && nowTime['min'] < state.stories[i].postTime['min']) {
+          state.duringTime[i] = nowTime['min'] + 60 - state.stories[i].postTime['min'] + '分鐘';}
   
           else if (nowTime['hr'] == state.stories[i].postTime['hr'] && nowTime['min'] == state.stories[i].postTime['min']) {
           state.duringTime[i] = nowTime['sec'] - state.stories[i].postTime['sec'] + '秒';}
@@ -230,7 +266,7 @@ export default createStore({
       }
 
       console.log(state.stories);  
-      console.log(state.duringTime)
+      console.log(state.duringTime);
     },
 
 
@@ -239,58 +275,64 @@ export default createStore({
     async accessCode({state, dispatch}) {
       // if code doesn't exist, then carry out Facebook login 
       // https://hiltonpo.github.io/hw_vue_ig/
+      let loginUrl = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/hw_vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights';
       if (!window.location.search.substring(6)) {
-        window.location = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/hw_vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights'
+        window.location = loginUrl;
       }
       // When Facebook login is done, get code form url
-      state.code = window.location.search.substring(6)
-      console.log(state.code)
+      // state.code = window.location.search.substring(6)
+      var code = window.location.search.substring(6);
+      console.log(code);
 
-      await dispatch('accessToken')
-      await dispatch('getUserPage')
-      await dispatch('getIgAccountID')
+      await dispatch('accessToken', {loginUrl, code});
+      await dispatch('getUserPage');
+      await dispatch('getIgAccountID');
       
-      dispatch('basicInfos')
-      dispatch('tagInfos')
-      dispatch('stories')
+      dispatch('basicInfos');
+      dispatch('tagInfos');
+      dispatch('stories');
 
-      console.log(state.accessToken)
-      console.log(state.userID)
-      console.log(state.igAccountID)
+      console.log(state.accessToken);
+      console.log(state.userID);
+      console.log(state.igAccountID);
     },
 
-    accessToken({state}) {
+    accessToken({commit}, {loginUrl, code}) {
       // return axios.get('api/oauth/access_token',
       return axios.get('https://graph.facebook.com/v11.0/oauth/access_token',
       {params: {
         client_id: '339667141262982',
         redirect_uri: 'https://hiltonpo.github.io/hw_vue_ig/',
         client_secret: 'fa83ce895addeb13132068014862c9cd',
-        code: state.code,
+        code: code,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        state.accessToken = response.data.access_token
+        commit('getAccessToken', response.data.access_token);
       })
       .catch(error => {
-        console.log(error);
+        // get the same code when refreshing page, log-in fb again
+        if (error.response.data.error.code == 100) {
+          window.location = loginUrl;
+        }
       });
     },
 
-    getUserPage({state}) {
+    getUserPage({state, commit}) {
       // return axios.get('api/me/accounts',
       return axios.get('https://graph.facebook.com/v11.0/me/accounts',
       {params: {
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        state.userID = response.data.data[0]['id']
+        commit('getUserID', response.data.data[0]['id']);
+        // state.userID = response.data.data[0]['id']
       })
       .catch(error => {
         console.log(error);
       });
     },
 
-     getIgAccountID({state}) {
+     getIgAccountID({state, commit}) {
       // return axios.get('api/' + state.userID,
       return axios.get('https://graph.facebook.com/v11.0/' + state.userID,
       {params: {
@@ -298,7 +340,8 @@ export default createStore({
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        state.igAccountID = response.data['instagram_business_account']['id']
+        commit('getAccountID', response.data['instagram_business_account']['id'])
+        // state.igAccountID = response.data['instagram_business_account']['id']
       })
       .catch(error => {
         console.log(error);
@@ -315,19 +358,7 @@ export default createStore({
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data)
-        let posts = response.data.business_discovery.media_count;
-        let followers = response.data.business_discovery.followers_count;
-        let follows = response.data.business_discovery.follows_count;
-        
-        state.rowData = response.data.business_discovery.media.data
-        state.intro.username = response.data.business_discovery.username;
-        state.intro.avatar = response.data.business_discovery.profile_picture_url;
-        state.intro.name = response.data.business_discovery.name;
-        state.intro.biography = response.data.business_discovery.biography;
-
-        state.itemInfo[0].value = posts;
-        state.itemInfo[1].value = followers;
-        state.itemInfo[2].value = follows;
+        commit('getMetaData', response.data.business_discovery)
         commit('photoInfos');
       })
       .catch(error => {
@@ -345,8 +376,8 @@ export default createStore({
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         console.log(response.data);
-        state.rowTagData = response.data.data;
-        commit('tagPhotoInfos', state.rowTagData);
+        commit('getTagData', response.data.data);
+        commit('tagPhotoInfos');
       })
       .catch(error => {
         console.log(error);
@@ -354,7 +385,7 @@ export default createStore({
     },
     // readUI for comments 
     readComment({commit, state}) {
-      // axios.get('api/' + state.eventInfo.postID + '/comments',
+      // return axios.get('api/' + state.eventInfo.postID + '/comments',
       axios.get('https://graph.facebook.com/v11.0/' + state.eventInfo.postID + '/comments',
       {params:{
         fields: 'id,username,text,like_count,replies,timestamp',
@@ -368,6 +399,19 @@ export default createStore({
         console.log(error);
       });     
     },
+    // read reply after comment reading is done
+    async readReply({dispatch, commit, state}) {
+      await dispatch('readComment')
+      var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
+        // return axios.get('api/' + comment.id + '/replies',
+        return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
+        {params:{
+          fields: 'id,username,text,timestamp',
+          access_token: state.accessToken,
+        }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      }))
+      commit('getReplies', replies.map(reply => reply.data.data))
+    },
 
     //createUI for comments 
     postComment({commit, state}) {
@@ -378,16 +422,16 @@ export default createStore({
         access_token: state.accessToken,})
       .then(response => {
         commit('putComments', response.data)
-        console.log(response.data);
         commit('closeTextarea')
+        console.log(response.data);
         
       })
       .catch(error => {
         console.log(error.response.data.error.message);
-        state.errorMessage = error.response.data.error.message.substr(7);
+        commit('showErr', error.response.data.error.message.substr(7));
       });}
       else {
-        state.errorMessage = 'comment cannot be blank'
+        commit('showErr', 'comment cannot be blank');
       }
     },
     

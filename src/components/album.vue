@@ -8,29 +8,28 @@
     </div>
   </div>
   <div class="albums container-fluid row" v-if="toggle == 1">
-    <div class="photos" v-for="(item, index) in $store.state.photos" :key="index" @click="photoLine(item, index)">
-        <img :src="item" alt="photos" data-bs-toggle="modal" data-bs-target="#photoModal">
+    <div class="photos" v-for="(item, index) in photos" :key="index" @click="photoLine(item, index)">
+      <div class="postImg" :style="{'background-image': 'url(' + item + ')'}" data-bs-toggle="modal" data-bs-target="#photoModal"></div>
+        <!-- <img :src="item" alt="photos" data-bs-toggle="modal" data-bs-target="#photoModal"> -->
     </div>
   </div>
   <div class="mentions container-fluid row" v-if="toggle == 2">
-    <div class="tagPhotos" v-for="(item, index) in $store.state.tagPhotos" :key="index"  @click="photoLine(item, index)">
-        <img :src="item" alt="tagPhotos" data-bs-toggle="modal" data-bs-target="#photoModal">
+    <div class="tagPhotos" v-for="(item, index) in tagPhotos" :key="index"  @click="photoLine(item, index)">
+      <div class="tagImg" :style="{'background-image': 'url(' + item + ')'}" data-bs-toggle="modal" data-bs-target="#photoModal"></div>
+        <!-- <img :src="item" alt="tagPhotos" data-bs-toggle="modal" data-bs-target="#photoModal"> -->
     </div>
+    <div class="test"></div>
   </div>
   <timeLine></timeLine>
-  
-
 </template>
 
 <script>
+import {mapState} from 'vuex'
 import timeLine from './timeLine.vue'
 export default {
   name: 'album',
   components:{
     timeLine
-  },
-  props: {
-
   },
   data() {
     return{
@@ -38,6 +37,10 @@ export default {
       toggle: 1,
     }
   },
+  computed: mapState({
+    photos:'photos',
+    tagPhotos:'tagPhotos',
+  }),
   methods: {
     scroll() {
       let yposistion = this.$refs.switch.getBoundingClientRect().top + window.scrollY;
@@ -52,6 +55,7 @@ export default {
       if (this.toggle == 1 ){
         this.$store.commit('createModal', {currentItem, index});
         this.$store.dispatch('readComment')
+        this.$store.dispatch('readReply')
       } else {
         this.$store.commit('createTagModal', {currentItem, index});
       }
@@ -93,12 +97,13 @@ export default {
 
 .photos, .tagPhotos {
   width: calc(100vw/3);
-  height: calc(33vw*1.1);
+  /* height: calc(33vw*1.1); */
+  height: auto;
   padding: 0;
   border-bottom:1px solid #fff;
   border-right: 1px solid #fff;
 }
-
+/* 
 .photos > img, .tagPhotos > img {
   width: 100%;
   height: 100%;
@@ -108,12 +113,20 @@ export default {
 
 .photos > img:hover, .tagPhotos > img:hover {
   filter: brightness(70%);
-}
+} */
 
 .fixed {
   position: sticky;
   top: 0;
   z-index:1;
+}
 
+.postImg, .tagImg{
+  padding-bottom: 100%;
+  background-size: cover;
+}
+
+.postImg:hover {
+  filter: brightness(70%);
 }
 </style>

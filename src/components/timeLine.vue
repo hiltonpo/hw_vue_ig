@@ -6,10 +6,10 @@
       <div class="modal-header">
         <div class="littleInfo">
           <div class="user-pic">
-            <img :src="$store.state.intro.avatar" alt="photo">
+            <img :src="avatar" alt="photo">
           </div>
-          <div class="user-account">
-            hiltonpopo
+          <div class="avatar-account">
+            {{username}}
           </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @click="close"></button>
@@ -17,21 +17,21 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="photoLeft">
-            <img :src="$store.state.eventData.photo" alt="photo">  
+            <img :src="modalPhoto" alt="photo">  
           </div>
           <div class="symbol">
             <fa class="heart" :icon="['far', 'heart']" />
             <fa class="comment" :icon="['far', 'comment']" @click="showTextarea" />
           </div>
           <div class="like">
-            {{$store.state.eventData.like}} likes
+            {{like}} likes
           </div>
           <div class="caption">
-            {{$store.state.eventData.caption}}
+            {{caption}}
           </div>
           <hr>
           <div class="comments">
-            <div class="originComments edit clearfix"  v-for="(comment, index) in $store.state.comments[$store.state.eventID]" :key="index"
+            <div class="originComments edit clearfix"  v-for="(comment, index) in comments" :key="index"
             @click.prevent="edit(index)">
               
               <div class="visitor d-flex">
@@ -39,32 +39,26 @@
                 <div class="text ">{{comment.text}}</div>
               </div>
 
-              <div class="reply" v-if="comment.replies!=null">
-                <div class="replyUser d-flex">
-                  <div class="user-pic">
-                    <img :src="$store.state.intro.avatar" alt="photo">
-                  </div>
+              <div class="reply" v-if="comment.replies!=null" >
+                <div class="replyUser d-flex" v-for="(reply, i) in replies[index]" :key="i">
                   <div class="user-account">
-                    hiltonpopo
-                    <div class="text">
-                      {{comment.replies.data[0]["text"]}}             
-                    </div>
+                    {{reply.username}}
+                  </div>
+                  <div class="text">
+                    {{reply.text}}
                   </div>
                 </div>
               </div>
-              <div class="editButtons" v-if="$store.state.activeComment == index && !$store.state.isTextarea">
+              <div class="editButtons" v-if="activeComment == index && !isTextarea">
                 <button class="delete" @click.stop="deleteComment(comment)">delete</button>
                 <button class="cancel" @click.stop="cancel">cancel</button>
-              </div>
-
-            
+              </div>    
             </div>
-
           </div>
 
-          <div id="text-panel" :class="newClass"  v-if="$store.state.isTextarea">
-            <div class="error-msg" :class="[$store.state.errorMessage ? 'open' : '']">
-              <div class="alert alert-danger">{{$store.state.errorMessage}}</div>
+          <div id="text-panel" :class="newClass"  v-if="isTextarea">
+            <div class="error-msg" :class="[errorMessage ? 'open' : '']">
+              <div class="alert alert-danger">{{errorMessage}}</div>
             </div>
             <textarea name="description" id="description"  placeholder="請輸入文字..."  v-model="newComment"></textarea>
             <div class="buttons">
@@ -72,9 +66,6 @@
               <button class="cancel" @click="close">cancel</button>
             </div>
           </div>
-
-
-
         </div>
 
       </div>
@@ -87,34 +78,38 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex';
 export default {
   name: 'timeLine',
-  props: {
-    
-  },
   data() {
     return{
       newClass:'new',
     }
   },
-
-  computed: {
-
+  computed:{
     newComment:{
       get() {
         return this.$store.state.commentInfo;
       },
-
       set(value) {
         this.$store.commit('createComment', value);
       },
-    }
+    },
+    ...mapState({
+      avatar: state => state.intro.avatar,
+      username: state => state.intro.username,
+      modalPhoto: state => state.eventData.photo,
+      like: state => state.eventData.like,
+      caption: state => state.eventData.caption,
+      comments: state => state.comments[state.eventID],
+      replies: 'replies',
+      activeComment: 'activeComment',
+      isTextarea: 'isTextarea',
+      errorMessage: 'errorMessage',
+    })
   },
 
-
   methods: {
-
     //delete & cancel
     edit(index) {
       this.$store.commit('editMode', index)
@@ -144,8 +139,6 @@ export default {
   },
   created() {
     this.$store.commit('cancel')
-
-
   },     
 }
 </script>
@@ -165,9 +158,11 @@ export default {
   border-radius: 50%;
 }
 
-.user-account {
+.avatar-account {
   display: flex;
   align-items: center;
+  display: flex;
+  font-weight: 500;
   padding-left: 10px;
 }
 
@@ -188,8 +183,6 @@ export default {
   cursor: pointer;
 }
 
-
-
 .like {
   padding-bottom: 10px;
   font-weight: bold;
@@ -207,12 +200,16 @@ export default {
 
 .originComments {
   cursor: pointer;
+  padding-bottom: 5px;
 }
 
-
-.originComments .commentUser {
+.originComments .commentUser, .reply .user-account {
   font-weight: bold;
   margin-right: 8px;
+}
+
+.reply .user-account {
+  padding-left: 10px;
 }
 
 .originComments .text {
@@ -262,14 +259,7 @@ export default {
     float: left;
 }
 
-/* .comments.edit button.cancel, .comments.edit button.delete {
-    display: block;
-    width: 50%;
-    float: left;
-} */
-
 .originComments.edit button.delete {
-    /* width: 100%; */
     background: #c21717;
 }
 
@@ -277,12 +267,4 @@ export default {
     background: #74be00;
     border-radius: 45px;
 }
-
-
-
-
-
-
-
-
 </style>

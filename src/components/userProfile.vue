@@ -2,7 +2,7 @@
   <div id="header">
     <div class="account">
       <div class="name">
-        <p>{{$store.state.intro.username}}
+        <p>{{username}}
           <i>9+</i>
         </p>
       </div>
@@ -15,29 +15,30 @@
   <div id="user">
     <div class="user container-fluid row m-0">
       <div class="avatar col-3" >
-        <img :src="$store.state.intro.avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
-        :class="[$store.state.storyIDs.length != 0 ? 'story' : '']">
+        <img :src="avatar" alt="avatar" data-bs-toggle="modal" data-bs-target="#storyModal"
+        :class="[storyIDs.length != 0 ? 'story' : '']">
       </div>
       <div class="item col-9">
-        <div class="item-info" v-for="(item, index) in $store.state.itemInfo" :key="index">
+        <div class="item-info" v-for="(item, index) in itemInfo" :key="index">
           {{item.value}} <br>
           {{item.title}}
         </div>
       </div>
     </div>
     <div class="personal-info container-fluid row">
-      {{$store.state.intro.name}}
+      {{idname}}
       <br>
-      {{$store.state.intro.biography}}
+      {{biography}}
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
-    <storyLine v-if="$store.state.stories"></storyLine>
+    <storyLine v-if="stories"></storyLine>
     
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import album from './album.vue'
 import storyLine from './storyLine.vue'
 export default {
@@ -46,15 +47,15 @@ export default {
     album,
     storyLine,
   },
-  props: {},
-  data() {
-    return {
-
-    }
-  },
-  methods:{
-
-  },
+  computed: mapState({
+      username: state => state.intro.username,
+      avatar: state => state.intro.avatar,
+      idname: state => state.intro.name,
+      biography: state => state.intro.biography,
+      itemInfo: 'itemInfo',
+      storyIDs: 'storyIDs',
+      stories: 'stories',
+    })
 }
 </script>
 
