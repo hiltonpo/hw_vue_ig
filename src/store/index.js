@@ -272,7 +272,7 @@ export default createStore({
 
   },
   actions: {
-    async accessCode({state, dispatch}) {
+    async accessCode({dispatch}) {
       // if code doesn't exist, then carry out Facebook login 
       // https://hiltonpo.github.io/hw_vue_ig/
       let loginUrl = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/hw_vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights';
