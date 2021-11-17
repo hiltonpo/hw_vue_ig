@@ -32,7 +32,7 @@
     </div>
     <div class="edit-personal">編輯個人檔案</div>
     <album></album>
-    <storyLine v-if="stories"></storyLine>
+    <storyLine v-if="storyIDs.length!=0"></storyLine>
     
   </div>
 </template>
@@ -86,8 +86,6 @@ export default {
   margin-right: 15px;
 }
 
-
-
 .avatar {
   display: flex;
   justify-content: center;
@@ -108,7 +106,6 @@ export default {
   display: flex;
   text-align: center;
 }
-
 
 .item > .item-info {
   display: inline-flex;

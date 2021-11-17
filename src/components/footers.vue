@@ -6,7 +6,6 @@
     <div><fa  :icon="['fas', 'shopping-bag']" /></div>
     <div><fa  :icon="['fas', 'user-circle']" /></div>
   </div>
-
 </template>
 
 <script>

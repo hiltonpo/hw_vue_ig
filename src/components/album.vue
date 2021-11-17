@@ -86,13 +86,11 @@ export default {
   border-bottom: 2px solid black;
 }
 
-
 .albums {
   margin: 0 auto;
   padding: 0;
   overflow-y: auto;
   overflow-x: hidden;
-
 }
 
 .photos, .tagPhotos {

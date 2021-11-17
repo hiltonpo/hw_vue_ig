@@ -9,7 +9,7 @@ import axios from 'axios';
 export default createStore({
   state: {
     //access-token & user and account id
-    accessToken:[],
+    accessToken:null,
     userID:[],
     igAccountID:[],
 
@@ -283,21 +283,10 @@ export default createStore({
       // state.code = window.location.search.substring(6)
       var code = window.location.search.substring(6);
       console.log(code);
-
-      await dispatch('accessToken', {loginUrl, code});
-      await dispatch('getUserPage');
-      await dispatch('getIgAccountID');
-      
-      dispatch('basicInfos');
-      dispatch('tagInfos');
-      dispatch('stories');
-
-      console.log(state.accessToken);
-      console.log(state.userID);
-      console.log(state.igAccountID);
+      dispatch('accessToken', {loginUrl, code});
     },
 
-    accessToken({commit}, {loginUrl, code}) {
+    accessToken({state, dispatch, commit}, {loginUrl, code}) {
       // return axios.get('api/oauth/access_token',
       return axios.get('https://graph.facebook.com/v11.0/oauth/access_token',
       {params: {
@@ -306,8 +295,17 @@ export default createStore({
         client_secret: 'fa83ce895addeb13132068014862c9cd',
         code: code,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      .then(response => {
-        commit('getAccessToken', response.data.access_token);
+      .then(async response => {
+        await commit('getAccessToken', response.data.access_token);
+        await dispatch('getUserPage');
+        await dispatch('getIgAccountID');
+        dispatch('basicInfos');
+        dispatch('tagInfos');
+        dispatch('stories');
+
+        console.log(state.accessToken);
+        console.log(state.userID);
+        console.log(state.igAccountID);
       })
       .catch(error => {
         // get the same code when refreshing page, log-in fb again
@@ -332,7 +330,7 @@ export default createStore({
       });
     },
 
-     getIgAccountID({state, commit}) {
+    getIgAccountID({state, commit}) {
       // return axios.get('api/' + state.userID,
       return axios.get('https://graph.facebook.com/v11.0/' + state.userID,
       {params: {
@@ -400,17 +398,33 @@ export default createStore({
       });     
     },
     // read reply after comment reading is done
-    async readReply({dispatch, commit, state}) {
-      await dispatch('readComment')
-      var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
-        // return axios.get('api/' + comment.id + '/replies',
-        return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
-        {params:{
-          fields: 'id,username,text,timestamp',
-          access_token: state.accessToken,
-        }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      }))
-      commit('getReplies', replies.map(reply => reply.data.data))
+    readReply({dispatch, commit, state}) {
+      // await dispatch('readComment')
+      // var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
+      //   return axios.get('api/' + comment.id + '/replies',
+      //   // return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
+      //   {params:{
+      //     fields: 'id,username,text,timestamp',
+      //     access_token: state.accessToken,
+      //   }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+      // }))
+      // commit('getReplies', replies.map(reply => reply.data.data))
+      let readComment = async () => {
+        let readComment = await dispatch('readComment')
+        return readComment
+      }
+
+      readComment().then(async () => {
+        var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
+          // return axios.get('api/' + comment.id + '/replies',
+          return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
+          {params:{
+            fields: 'id,username,text,timestamp',
+            access_token: state.accessToken,
+          }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
+        }))
+        commit('getReplies', replies.map(reply => reply.data.data))
+      })
     },
 
     //createUI for comments 
