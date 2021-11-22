@@ -7,6 +7,7 @@ import axios from 'axios';
 
 
 export default createStore({
+  strict:true,
   state: {
     //access-token & user and account id
     accessToken:null,
@@ -409,10 +410,30 @@ export default createStore({
       //   }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       // }))
       // commit('getReplies', replies.map(reply => reply.data.data))
-      let readComment = async () => {
-        let readComment = await dispatch('readComment')
-        return readComment
+      function readComment() {
+        return new Promise((resolve, reject)=> {
+          let readComment = dispatch('readComment')
+          if (readComment) {
+            resolve(readComment)
+          }
+          else {
+            reject(null)
+          }
+        })
       }
+      // let readComment = new Promise((resolve, reject) => {
+      //   let readComment =  dispatch('readComment')
+      //   if (readComment) {
+      //     resolve(readComment)
+      //   } 
+      //   else {
+      //     reject(null)
+      //   }
+      // })
+      // let readComment = async () => {
+      //   let readComment = await dispatch('readComment')
+      //   return readComment
+      // }
 
       readComment().then(async () => {
         var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
@@ -423,7 +444,10 @@ export default createStore({
             access_token: state.accessToken,
           }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
         }))
+        console.log(replies)
         commit('getReplies', replies.map(reply => reply.data.data))
+        
+
       })
     },
 

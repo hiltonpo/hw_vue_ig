@@ -54,7 +54,7 @@ export default {
     photoLine(currentItem, index) {
       if (this.toggle == 1 ){
         this.$store.commit('createModal', {currentItem, index});
-        this.$store.dispatch('readComment')
+        // this.$store.dispatch('readComment')
         this.$store.dispatch('readReply')
       } else {
         this.$store.commit('createTagModal', {currentItem, index});
