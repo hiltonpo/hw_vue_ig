@@ -385,7 +385,7 @@ export default createStore({
     // readUI for comments 
     readComment({commit, state}) {
       // return axios.get('api/' + state.eventInfo.postID + '/comments',
-      axios.get('https://graph.facebook.com/v11.0/' + state.eventInfo.postID + '/comments',
+      return axios.get('https://graph.facebook.com/v11.0/' + state.eventInfo.postID + '/comments',
       {params:{
         fields: 'id,username,text,like_count,replies,timestamp',
         access_token: state.accessToken,
