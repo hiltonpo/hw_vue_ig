@@ -410,16 +410,9 @@ export default createStore({
       //   }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       // }))
       // commit('getReplies', replies.map(reply => reply.data.data))
-      function readComment() {
-        return new Promise((resolve, reject)=> {
-          let readComment = dispatch('readComment')
-          if (readComment) {
-            resolve(readComment)
-          }
-          else {
-            reject(null)
-          }
-        })
+      async function Comment() {
+        let readComment = await dispatch('readComment')
+        return readComment
       }
       // let readComment = new Promise((resolve, reject) => {
       //   let readComment =  dispatch('readComment')
@@ -435,7 +428,7 @@ export default createStore({
       //   return readComment
       // }
 
-      readComment().then(async () => {
+      Comment().then(async () => {
         var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
           // return axios.get('api/' + comment.id + '/replies',
           return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
