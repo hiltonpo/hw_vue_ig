@@ -414,19 +414,6 @@ export default createStore({
         let readComment = await dispatch('readComment')
         return readComment
       }
-      // let readComment = new Promise((resolve, reject) => {
-      //   let readComment =  dispatch('readComment')
-      //   if (readComment) {
-      //     resolve(readComment)
-      //   } 
-      //   else {
-      //     reject(null)
-      //   }
-      // })
-      // let readComment = async () => {
-      //   let readComment = await dispatch('readComment')
-      //   return readComment
-      // }
 
       Comment().then(async () => {
         var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
@@ -439,8 +426,6 @@ export default createStore({
         }))
         console.log(replies)
         commit('getReplies', replies.map(reply => reply.data.data))
-        
-
       })
     },
 

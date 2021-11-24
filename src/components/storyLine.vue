@@ -22,10 +22,15 @@
       <div class="modal-body row">
         <div class="container-fluid p-0">
           <div class="stories" v-for="(story, index) in stories" :key="index">
-            <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="step===index" @click.capture="changeStory()">
-            <video controls :poster="story.thumbnail_url" v-else  v-show="step===index" @click.capture="changeStory()">
+            <div class="storyImg" :style="{'background-image': 'url(' + story.media_url + ')'}" 
+            v-if="story.media_type == 'IMAGE'" v-show="step===index" @click.capture="changeStory()"></div>
+            <div class="storyVideo" v-else v-show="step===index" @click.capture="changeStory()">
+              <iframe :src="story.media_url" frameborder="0" ></iframe>
+            </div>
+            <!-- <img :src="story.media_url" alt="photo" v-if="story.media_type == 'IMAGE'" v-show="step===index" @click.capture="changeStory()"> -->
+            <!-- <video controls :poster="story.thumbnail_url" v-else  v-show="step===index" @click.capture="changeStory()">
               <source :src="story.media_url"> 
-            </video>
+            </video> -->
           </div>
         </div>
 
@@ -114,23 +119,27 @@ export default {
   margin: 0 auto;
   height: 3px;
   list-style: none;
-  background-color: gray;
+  background-color: rgba(199, 197, 197, 0.781);
 }
 
 .time-bar > li.chosen {
-  background-color: rgba(199, 197, 197, 0.767);
+  background-color: gray;
 }
 
-/* .modal-body .stories{
-  max-height: 100vh;
-} */
-
-.stories > img, video{
-  max-width: 100%;
-  max-height: 100%;
-  object-fit:cover;
+.stories .storyImg {
+  padding-bottom: 130%;
+  background-size: cover;
 }
 
+.stories .storyVideo {
+  position: relative;
+  padding-bottom: 130%;
+}
+.stories iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
 
 @media screen and (max-width:576px) {
   .modal-fullscreen-sm-down {

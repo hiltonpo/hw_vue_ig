@@ -32,5 +32,4 @@ module.exports = {
     publicPath: process.env.NODE_ENV === 'production'
     ? '/hw_vue_ig/'
     : '/'
-    
   }
