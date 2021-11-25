@@ -94,7 +94,7 @@ export default {
 }
 
 .photos, .tagPhotos {
-  width: calc(100vw/3);
+  width: calc(100％/3);
   /* height: calc(33vw*1.1); */
   height: auto;
   padding: 0;
