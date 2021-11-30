@@ -275,8 +275,8 @@ export default createStore({
   actions: {
     async accessCode({dispatch}) {
       // if code doesn't exist, then carry out Facebook login 
-      // https://hiltonpo.github.io/hw_vue_ig/
-      let loginUrl = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/hw_vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights';
+      // https://hiltonpo.github.io/vue_ig/
+      let loginUrl = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights';
       if (!window.location.search.substring(6)) {
         window.location = loginUrl;
       }
@@ -292,7 +292,7 @@ export default createStore({
       return axios.get('https://graph.facebook.com/v11.0/oauth/access_token',
       {params: {
         client_id: '339667141262982',
-        redirect_uri: 'https://hiltonpo.github.io/hw_vue_ig/',
+        redirect_uri: 'https://hiltonpo.github.io/vue_ig/',
         client_secret: 'fa83ce895addeb13132068014862c9cd',
         code: code,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
