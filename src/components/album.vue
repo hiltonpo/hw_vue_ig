@@ -51,11 +51,10 @@ export default {
       this.toggle = toggle;
     },
 
-    async photoLine(currentItem, index) {
+    photoLine(currentItem, index) {
       if (this.toggle == 1 ){
         this.$store.commit('createModal', {currentItem, index});
-        // this.$store.dispatch('readComment')
-        await this.$store.dispatch('readReply')
+        this.$store.dispatch('readReply')
       } else {
         this.$store.commit('createTagModal', {currentItem, index});
       }

@@ -145,7 +145,7 @@ export default createStore({
           return a.timestamp > b.timestamp ? 1 : -1;
         }))
       }
-      state.replies = Object.assign([], temporary_replies);
+      state.replies[state.eventID] = temporary_replies;
       console.log(state.replies)
     },
 
@@ -199,7 +199,6 @@ export default createStore({
       state.isTextarea = false;
       state.activeComment = null;
       state.errorMessage = null;
-      state.replies = null;
     },
 
     //story
