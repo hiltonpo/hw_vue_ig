@@ -40,7 +40,7 @@
               </div>
 
               <div class="reply" v-if="comment.replies!=null" >
-                <div class="replyUser d-flex" v-for="(reply, i) in replies[index]" :key="i">
+                <div class="replyUser d-flex" v-for="(reply, i) in replies" :key="i">
                   <div class="user-account">
                     {{reply.username}}
                   </div>
