@@ -145,8 +145,8 @@ export default createStore({
           return a.timestamp > b.timestamp ? 1 : -1;
         }))
       }
-      state.replies[state.eventID] = Object.assign([], temporary_replies);
-      console.log(state.replies[state.eventID])
+      state.replies = Object.assign([], temporary_replies);
+      console.log(state.replies)
     },
 
     // show the created comments immediately in post
