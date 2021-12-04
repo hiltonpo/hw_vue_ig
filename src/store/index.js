@@ -199,7 +199,6 @@ export default createStore({
       state.isTextarea = false;
       state.activeComment = null;
       state.errorMessage = null;
-      state.replies = null;
     },
 
     //story
