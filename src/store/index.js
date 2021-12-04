@@ -139,34 +139,25 @@ export default createStore({
     // read replies in post
     getReplies(state, replies) {
       // order by time replies and push replies
+      var temporary_replies = []
       for (var i = 0; i<replies.length; i++) {
-        state.replies[state.eventID].push(replies[i].sort((a, b) => {
+        temporary_replies.push(replies[i].sort((a, b) => {
           return a.timestamp > b.timestamp ? 1 : -1;
         }))
       }
+      state.replies[state.eventID] = Object.assign([], temporary_replies);
       console.log(state.replies[state.eventID])
     },
 
     // show the created comments immediately in post
     putComments(state, id) {
-      if (state.comments[state.eventID].length == 0) {
-        var newOrder = 0; 
-        state.comments[state.eventID][newOrder] = {
+        let newComment = {
           "id": id.id,
-          "username":"hiltonpopo", 
+          "username":"vue_demo_ig", 
           "text":state.commentInfo, 
           "like_count": 0,
         };
-      }
-      else {
-        var plusOrder = state.comments[state.eventID].length;  
-        state.comments[state.eventID][plusOrder] = {
-          "id": id.id,
-          "username":"hiltonpopo", 
-          "text":state.commentInfo, 
-          "like_count": 0,
-        };
-      }
+        state.comments[state.eventID].splice(0, 0, newComment)
       console.log(state.comments);
     },
     // show error when comment is blank
@@ -282,7 +273,6 @@ export default createStore({
         window.location = loginUrl;
       }
       // When Facebook login is done, get code form url
-      // state.code = window.location.search.substring(6)
       var code = window.location.search.substring(6);
       console.log(code);
       dispatch('accessToken', {loginUrl, code});
@@ -341,7 +331,6 @@ export default createStore({
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         commit('getAccountID', response.data['instagram_business_account']['id'])
-        // state.igAccountID = response.data['instagram_business_account']['id']
       })
       .catch(error => {
         console.log(error);
@@ -401,16 +390,6 @@ export default createStore({
     },
     // read reply after comment reading is done
     readReply({dispatch, commit, state}) {
-      // await dispatch('readComment')
-      // var replies = await Promise.all(state.comments[state.eventID].map((comment) => {
-      //   return axios.get('api/' + comment.id + '/replies',
-      //   // return axios.get('https://graph.facebook.com/v11.0/' + comment.id + '/replies',
-      //   {params:{
-      //     fields: 'id,username,text,timestamp',
-      //     access_token: state.accessToken,
-      //   }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
-      // }))
-      // commit('getReplies', replies.map(reply => reply.data.data))
       async function Comment() {
         let readComment = await dispatch('readComment')
         return readComment
