@@ -136,14 +136,15 @@ export default createStore({
       console.log(state.comments);
       console.log(state.eventID);
     },
-
+    // read replies in post
     getReplies(state, replies) {
+      // order by time replies and push replies
       for (var i = 0; i<replies.length; i++) {
-        state.replies.push(replies[i].sort((a, b) => {
+        state.replies[state.eventID].push(replies[i].sort((a, b) => {
           return a.timestamp > b.timestamp ? 1 : -1;
         }))
       }
-      console.log(state.replies)
+      console.log(state.replies[state.eventID])
     },
 
     // show the created comments immediately in post

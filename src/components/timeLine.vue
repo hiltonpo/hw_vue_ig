@@ -40,7 +40,7 @@
               </div>
 
               <div class="reply" v-if="comment.replies!=null" >
-                <div class="replyUser d-flex" v-for="(reply, i) in replies[index]" :key="i">
+                <div class="replyUser d-flex" v-for="(reply, i) in replies[eventID][index]" :key="i">
                   <div class="user-account">
                     {{reply.username}}
                   </div>
@@ -102,6 +102,7 @@ export default {
       like: state => state.eventData.like,
       caption: state => state.eventData.caption,
       comments: state => state.comments[state.eventID],
+      eventID: 'eventID',
       replies: 'replies',
       activeComment: 'activeComment',
       isTextarea: 'isTextarea',
