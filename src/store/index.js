@@ -140,7 +140,7 @@ export default createStore({
     getReplies(state, replies) {
       // order by time replies and push replies
       var temporary_replies = []
-      for (var i = 0; i<replies.length; i++) {
+      for (let i = 0; i<replies.length; i++) {
         temporary_replies.push(replies[i].sort((a, b) => {
           return a.timestamp > b.timestamp ? 1 : -1;
         }))
@@ -206,7 +206,7 @@ export default createStore({
     GetStoriesId(state, storyID) {
       var storyIdCount = storyID.length;
       
-      for (var i = 0; i<storyIdCount; i++) {
+      for (let i = 0; i<storyIdCount; i++) {
         state.storyIDs[i] = storyID[i].id;
       }
       console.log(state.storyIDs);
@@ -315,7 +315,6 @@ export default createStore({
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
         commit('getUserID', response.data.data[0]['id']);
-        // state.userID = response.data.data[0]['id']
       })
       .catch(error => {
         console.log(error);
@@ -467,7 +466,7 @@ export default createStore({
     storiesInfo({state, commit}) {
       let promises = [];
       let storyInfos = [];
-      for (var i = 0; i<state.storyIDs.length; i++) {
+      for (let i = 0; i<state.storyIDs.length; i++) {
         promises.push(
           // axios.get('api/' + state.storyIDs[i],
           axios.get('https://graph.facebook.com/v11.0/' + state.storyIDs[i],
