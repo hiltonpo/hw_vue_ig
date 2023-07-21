@@ -42,7 +42,7 @@ export default createStore({
     eventData:[],
    
     // comments
-    isTextarea:false,
+    isTextarea:true,
     errorMessage:null,  
     activeComment:[],
     comments:[],
@@ -196,7 +196,6 @@ export default createStore({
     },
 
     closeTextarea(state) {
-      state.isTextarea = false;
       state.activeComment = null;
       state.errorMessage = null;
     },
@@ -268,23 +267,22 @@ export default createStore({
     async accessCode({dispatch}) {
       // if code doesn't exist, then carry out Facebook login 
       // https://hiltonpo.github.io/vue_ig/
-      let loginUrl = 'https://www.facebook.com/v11.0/dialog/oauth?client_id=339667141262982&redirect_uri=https://hiltonpo.github.io/vue_ig/&scope=instagram_basic, pages_show_list, pages_read_engagement, instagram_manage_comments, business_management, public_profile, instagram_content_publish, ads_management, instagram_manage_insights';
-      if (!window.location.search.substring(6)) {
+      let loginUrl = `https://www.facebook.com/v17.0/dialog/oauth?client_id=${process.env.VUE_APP_FB_CLIENT_ID}&redirect_uri=${process.env.VUE_APP_FB_REDIRECTURI}&state={state-param}&scope=${process.env.VUE_APP_FB_SCOPE}`;
+      const code = window.location.search.split('&')[0].substr(6)
+      if (!code) {
         window.location = loginUrl;
       }
       // When Facebook login is done, get code form url
-      var code = window.location.search.substring(6);
-      console.log(code);
       dispatch('accessToken', {loginUrl, code});
     },
 
     accessToken({state, dispatch, commit}, {loginUrl, code}) {
       // return axios.get('api/oauth/access_token',
-      return axios.get('https://graph.facebook.com/v11.0/oauth/access_token',
+      return axios.get('https://graph.facebook.com/v17.0/oauth/access_token',
       {params: {
-        client_id: '339667141262982',
-        redirect_uri: 'https://hiltonpo.github.io/vue_ig/',
-        client_secret: 'fa83ce895addeb13132068014862c9cd',
+        client_id: process.env.VUE_APP_FB_CLIENT_ID,
+        redirect_uri: process.env.VUE_APP_FB_REDIRECTURI,
+        client_secret: process.env.VUE_APP_FB_CLIENT_SECRET,
         code: code,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(async response => {
@@ -309,12 +307,13 @@ export default createStore({
 
     getUserPage({state, commit}) {
       // return axios.get('api/me/accounts',
-      return axios.get('https://graph.facebook.com/v11.0/me/accounts',
+      return axios.get('https://graph.facebook.com/v17.0/me/accounts',
       {params: {
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        commit('getUserID', response.data.data[0]['id']);
+        const userID = response.data.data[0]['id']
+        commit('getUserID', userID);
       })
       .catch(error => {
         console.log(error);
@@ -323,13 +322,14 @@ export default createStore({
 
     getIgAccountID({state, commit}) {
       // return axios.get('api/' + state.userID,
-      return axios.get('https://graph.facebook.com/v11.0/' + state.userID,
+      return axios.get('https://graph.facebook.com/v17.0/' + state.userID,
       {params: {
         fields: 'instagram_business_account',
         access_token: state.accessToken,
       }}, {headers:{'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}})
       .then(response => {
-        commit('getAccountID', response.data['instagram_business_account']['id'])
+        const igAccountID = response.data.instagram_business_account.id
+        commit('getAccountID', igAccountID)
       })
       .catch(error => {
         console.log(error);
@@ -339,7 +339,7 @@ export default createStore({
     // basic information including username, follower, posts... 
     basicInfos({commit, state}) {
       // axios.get('api/' + state.igAccountID,
-      axios.get('https://graph.facebook.com/v11.0/' + state.igAccountID,
+      axios.get('https://graph.facebook.com/v17.0/' + state.igAccountID,
       {params:{
         fields: 'business_discovery.username(vue_demo_ig){username,website,name,ig_id,id,profile_picture_url,biography,follows_count,followers_count,media_count,media{caption,like_count,comments_count,media_url,permalink,media_type,timestamp}}',
         access_token: state.accessToken,

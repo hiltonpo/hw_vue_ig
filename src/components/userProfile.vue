@@ -70,6 +70,9 @@ export default {
   justify-content: space-between;
   font-size: 18px;
   font-weight: 700;
+  @media screen and (min-width: 900px) {
+    font-size: 24px;
+  }
 }
 
 .name p i {
@@ -86,6 +89,10 @@ export default {
   margin-right: 15px;
 }
 
+.account > .symbols {
+  font-size: 10px;
+}
+
 .avatar {
   display: flex;
   justify-content: center;
@@ -94,6 +101,9 @@ export default {
 .avatar > img{
   width: 90px;
   border-radius: 50%;
+  @media screen and (min-width: 900px) {
+    width: 70%;
+  }
 }
 
 .avatar >img.story {
@@ -114,11 +124,17 @@ export default {
   align-self: center;
   line-height: 1.1;
   font-size: 15px;
+  @media screen and (min-width: 900px) {
+    font-size: 24px;
+  }
 }
 
 .personal-info {
   margin: 0;
   padding-top: 10px;
+  @media screen and (min-width: 900px) {
+    font-size: 24px;
+  }
 }
 
 .edit-personal {
@@ -126,5 +142,8 @@ export default {
   border: 1px solid #ccc;
   border-radius: 3px;
   margin: 10px 25px 15px 25px;
+  @media screen and (min-width: 900px) {
+    font-size: 24px;
+  }
 }
 </style>

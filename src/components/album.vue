@@ -88,6 +88,7 @@ export default {
 .albums {
   margin: 0 auto;
   padding: 0;
+  padding-bottom: 40px;
   overflow-y: auto;
   overflow-x: hidden;
 }

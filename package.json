@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "serve": "vue-cli-service serve --open",
+    "build": "vue-cli-service build --dest main-build",
+    "build-dev": "vue-cli-service build --mode development --dest dev-build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -22,6 +23,7 @@
     "popper.js": "^1.16.1",
     "vue": "^3.0.0",
     "vue-axios": "^3.2.5",
+    "vue-template-compiler": "^2.7.14",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
