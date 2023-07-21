@@ -63,7 +63,7 @@
             <textarea name="description" id="description"  placeholder="請輸入文字..."  v-model="newComment"></textarea>
             <div class="buttons">
               <button class="create" @click="postComment">comment</button>
-              <button class="cancel" @click="close">cancel</button>
+              <button class="cancel" @click="close">clear</button>
             </div>
           </div>
         </div>
@@ -130,11 +130,12 @@ export default {
     },
 
     close() {
+      this.newComment = ''
       this.$store.commit('closeTextarea')
     },
 
     postComment() {
-      this.$store.dispatch('postComment')     
+      this.$store.dispatch('postComment')
     }
   },
   created() {

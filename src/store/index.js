@@ -198,6 +198,7 @@ export default createStore({
     closeTextarea(state) {
       state.activeComment = null;
       state.errorMessage = null;
+      state.commentInfo = []
     },
 
     //story
